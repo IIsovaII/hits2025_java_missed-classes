@@ -23,20 +23,23 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
+    // хеширования паролей
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Настраивает механизм аутентификации. Использует UserDetailsServiceImpl для загрузки пользователей из базы данных и PasswordEncoder для проверки паролей.
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+                .userDetailsService(userDetailsService) // Используем UserDetailsService
+                .passwordEncoder(passwordEncoder()); // Используем кодировщик паролей
         return authenticationManagerBuilder.build();
     }
 
+    // настройка доступа к запросам авторизированным и неавторизированным пользователям
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

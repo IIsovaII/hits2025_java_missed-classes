@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -26,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
-                new ArrayList<>() // Роли ?
+                new ArrayList<>() // Роли пользователя (пока пусто)
         );
     }
 }

@@ -3,10 +3,7 @@ package com.example.hits2025_java_missed_classes.controller;
 import com.example.hits2025_java_missed_classes.dto.AuthRequest;
 import com.example.hits2025_java_missed_classes.dto.AuthResponse;
 import com.example.hits2025_java_missed_classes.dto.RegisterRequest;
-import com.example.hits2025_java_missed_classes.model.User;
-import com.example.hits2025_java_missed_classes.repository.UserRepository;
 import com.example.hits2025_java_missed_classes.service.AuthService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,13 +11,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(AuthService authService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
@@ -30,17 +23,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequest registerRequest) {
-        User user = new User();
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword())); // Хешируем пароль
-        userRepository.save(user);
-        return "User registered successfully!";
+        return authService.register(registerRequest);
     }
-
-    //    @PostMapping("/register")
-    //    public String register(@RequestBody RegisterRequest registerRequest) {
-    //        return authService.register(registerRequest);
-    ////        return "User registered successfully!";
-    //    }
 
 }
