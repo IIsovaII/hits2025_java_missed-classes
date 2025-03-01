@@ -12,6 +12,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -44,14 +49,29 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Отключаем CSRF
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Включаем CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register").permitAll() // Разрешаем доступ к этим эндпоинтам
+                        .requestMatchers("/auth/login", "/auth/register", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // Разрешаем доступ к этим эндпоинтам
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Отключаем сессии
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Отключаем сессии тк JWT
                 );
 
         return http.build();
+    }
+
+    // настройка CORS - изначально добавлено, чтобы работало отображение сваггера
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Разрешить запросы типа с фронта - подправить по необходимости
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Разрешить методы - можно потом дописать еще необходимые
+        configuration.setAllowedHeaders(List.of("*")); // Разрешить все заголовки
+        configuration.setAllowCredentials(true); // Разрешить передачу куки и авторизационных данных
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Применить CORS для всех путей
+        return source;
     }
 }

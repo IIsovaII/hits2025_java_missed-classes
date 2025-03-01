@@ -7,7 +7,7 @@ import com.example.hits2025_java_missed_classes.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/account")
 public class AuthController {
 
     private final AuthService authService;
