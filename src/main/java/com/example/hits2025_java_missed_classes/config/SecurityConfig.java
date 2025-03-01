@@ -1,7 +1,6 @@
 package com.example.hits2025_java_missed_classes.config;
 
 import com.example.hits2025_java_missed_classes.service.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
