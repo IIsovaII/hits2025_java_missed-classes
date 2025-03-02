@@ -1,74 +1,56 @@
 package com.example.hits2025_java_missed_classes.service;
 
-import com.example.hits2025_java_missed_classes.dto.AuthRequest;
-import com.example.hits2025_java_missed_classes.dto.AuthResponse;
+import com.example.hits2025_java_missed_classes.dto.LoginRequest;
 import com.example.hits2025_java_missed_classes.dto.RegisterRequest;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
-import com.example.hits2025_java_missed_classes.util.JwtUtil;
+import com.example.hits2025_java_missed_classes.security.JwtTokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class AuthService {
-
     private final AuthenticationManager authenticationManager;
-
-    private final UserDetailsServiceImpl userDetailsService;
-
-    private final JwtUtil jwtUtil;
-
+    private final JwtTokenProvider tokenProvider;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final UserRepository userRepository;
-
-    public AuthService(AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public AuthService(AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
-        this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
+        this.tokenProvider = tokenProvider;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public String register(RegisterRequest registerRequest) {
+
+    public String authenticateUser(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return tokenProvider.generateToken(authentication);
+    }
+
+    public UUID registerUser(RegisterRequest registerRequest) {
         User user = new User();
         user.setName(registerRequest.getName());
         user.setSurname(registerRequest.getSurname());
         user.setPatronymic(registerRequest.getPatronymic());
         user.setEmail(registerRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword())); // Хешируем пароль
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setRoles(registerRequest.getRoles());
 
         userRepository.save(user);
-
-        // Аутентификация пользователя
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(registerRequest.getEmail(), registerRequest.getPassword())
-        );
-
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(registerRequest.getEmail());
-
-        return jwtUtil.generateToken(String.valueOf(userDetails));
-    }
-
-
-    public AuthResponse authenticate(AuthRequest authRequest) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
-            );
-
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
-
-            final String jwt = jwtUtil.generateToken(String.valueOf(userDetails));
-
-            return new AuthResponse(jwt);
-        } catch (Exception e) {
-            System.err.println("Authentication failed: " + e.getMessage());
-            throw e;
-        }
+        return user.getId();
     }
 }
-
