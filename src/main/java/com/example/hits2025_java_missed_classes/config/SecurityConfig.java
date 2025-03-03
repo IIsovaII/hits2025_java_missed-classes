@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Настраиваем CORS
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Без сессий тк JWT
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // Разрешить доступ к эндпоинтам аутентификации
+                        .requestMatchers("/account/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // Разрешить доступ к эндпоинтам аутентификации
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 );
 
