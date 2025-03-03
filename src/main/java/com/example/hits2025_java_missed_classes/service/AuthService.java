@@ -2,17 +2,17 @@ package com.example.hits2025_java_missed_classes.service;
 
 import com.example.hits2025_java_missed_classes.dto.LoginRequest;
 import com.example.hits2025_java_missed_classes.dto.RegisterRequest;
+import com.example.hits2025_java_missed_classes.dto.TokenResponse;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
 import com.example.hits2025_java_missed_classes.security.JwtTokenProvider;
+import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -21,7 +21,10 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthService(AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(AuthenticationManager authenticationManager,
+                       JwtTokenProvider tokenProvider,
+                       UserRepository userRepository,
+                       PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.userRepository = userRepository;
@@ -29,7 +32,7 @@ public class AuthService {
     }
 
 
-    public String authenticateUser(LoginRequest loginRequest) {
+        public TokenResponse authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -38,10 +41,19 @@ public class AuthService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return tokenProvider.generateToken(authentication);
+
+        final String jwt = tokenProvider.generateToken(authentication);
+
+        return new TokenResponse(jwt);
     }
 
-    public UUID registerUser(RegisterRequest registerRequest) {
+    @Transactional
+    public TokenResponse registerUser(RegisterRequest registerRequest) {
+        // Прверка на отсутствие в БД пользователя с такой почтой
+        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+            throw new RuntimeException("User with this email already exists.");
+        }
+
         User user = new User();
         user.setName(registerRequest.getName());
         user.setSurname(registerRequest.getSurname());
@@ -51,6 +63,16 @@ public class AuthService {
         user.setRoles(registerRequest.getRoles());
 
         userRepository.save(user);
-        return user.getId();
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        registerRequest.getEmail(),
+                        registerRequest.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        final String jwt = tokenProvider.generateToken(authentication);
+        return new TokenResponse(jwt);
     }
 }

@@ -3,6 +3,8 @@ package com.example.hits2025_java_missed_classes.model;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
+
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,9 +20,32 @@ public class User {
     private String name;
     private String surname;
     private String patronymic;
+    @Column(unique = true)
     private String email;
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> roles;
+    private Set<String> roles = new HashSet<>();
+
+    public User() {
+
+    }
+
+    public User(String name, String surname, String patronymic, String email, String password, Set<String> roles) {
+        this.name = name;
+        this.surname = surname;
+        this.patronymic = patronymic;
+        this.email = email;
+        this.password = password;
+        this.roles = (roles == null) ? new HashSet<>() : new HashSet<>(roles);
+    }
+
+    // Геттер и сеттер пустых ролей
+    public Set<String> getRoles() {
+        return (roles == null) ? new HashSet<>() : roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = (roles == null) ? new HashSet<>() : roles;
+    }
 }
