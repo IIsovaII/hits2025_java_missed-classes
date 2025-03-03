@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+// TODO: написано коряво, возможно функции где-то в других файлах дублируются - потом подчистить
 public class UserPrincipal implements UserDetails {
 
     private final User user;

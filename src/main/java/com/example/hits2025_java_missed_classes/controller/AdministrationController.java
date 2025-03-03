@@ -13,7 +13,7 @@ public class AdministrationController {
     }
 
     @PostMapping("/faculty")
-    public ResponseEntity<?> registerFaculty(String facultyName) {
+    public ResponseEntity<?> addFaculty(String facultyName) {
         return ResponseEntity.ok("Faculty Registered");
     }
 

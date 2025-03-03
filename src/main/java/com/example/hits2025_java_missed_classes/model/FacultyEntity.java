@@ -15,6 +15,7 @@ public class FacultyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+    @Column(unique = true)
     private String name;
 
     @OneToMany(mappedBy = "faculty")

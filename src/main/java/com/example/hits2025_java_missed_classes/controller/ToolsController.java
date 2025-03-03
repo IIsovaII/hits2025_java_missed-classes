@@ -30,11 +30,13 @@ public class ToolsController {
         return ResponseEntity.ok().build();
     }
 
+    // TODO: в запросе еще нужно указывать имя/id факультета куда добавить группу - в swagger это не прописано - спросить как удобнее id/name
     @PostMapping("/group/add")
     public ResponseEntity<?> createGroup(){
         return ResponseEntity.ok().build();
     }
 
+    // TODO: не понятно что как удалять - выяснить
     @DeleteMapping("/group/delete")
     public ResponseEntity<?> deleteGroup(){
         return ResponseEntity.ok().build();
