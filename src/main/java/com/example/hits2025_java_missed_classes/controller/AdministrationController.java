@@ -1,15 +1,27 @@
 package com.example.hits2025_java_missed_classes.controller;
 
+import com.example.hits2025_java_missed_classes.model.FacultyEntity;
+import com.example.hits2025_java_missed_classes.service.FacultyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 // TODO: просто шаблоны прописаны, нужно сделать весь функционал
+// TODO: проверка на роль пользователя перед доступом к функциям
 @RestController
 @RequestMapping("/administration")
 public class AdministrationController {
+    private final FacultyService facultyService;
+
+    public AdministrationController(FacultyService facultyService) {
+        this.facultyService = facultyService;
+    }
+
     @GetMapping("/faculty")
     public ResponseEntity<?> getFacultiesList() {
-        return ResponseEntity.ok("Faculty List");
+        List<FacultyEntity> faculties = facultyService.getAllFaculties();
+        return ResponseEntity.ok(faculties);
     }
 
     @PostMapping("/faculty")

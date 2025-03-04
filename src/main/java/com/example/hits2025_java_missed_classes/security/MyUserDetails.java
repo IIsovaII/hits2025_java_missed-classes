@@ -10,11 +10,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 // TODO: написано коряво, возможно функции где-то в других файлах дублируются - потом подчистить
-public class UserPrincipal implements UserDetails {
+public class MyUserDetails implements UserDetails {
 
     private final User user;
 
-    public UserPrincipal(User user) {
+    public MyUserDetails(User user) {
         this.user = user;
     }
 
@@ -37,5 +37,25 @@ public class UserPrincipal implements UserDetails {
     @Override
     public String getUsername() {
         return user.getEmail(); // Используем email как username
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

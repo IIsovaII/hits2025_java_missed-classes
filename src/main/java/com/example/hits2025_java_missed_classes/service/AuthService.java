@@ -49,7 +49,7 @@ public class AuthService {
 
     @Transactional
     public TokenResponse registerUser(RegisterRequest registerRequest) {
-        // Прверка на отсутствие в БД пользователя с такой почтой
+        // Проверка на отсутствие в БД пользователя с такой почтой
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new RuntimeException("User with this email already exists.");
         }

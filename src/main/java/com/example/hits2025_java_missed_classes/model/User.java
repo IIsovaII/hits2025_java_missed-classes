@@ -25,6 +25,9 @@ public class User {
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    // TODO: удалить roles из БД
     private Set<String> roles = new HashSet<>();
 
     public User() {
@@ -37,7 +40,7 @@ public class User {
         this.patronymic = patronymic;
         this.email = email;
         this.password = password;
-        this.roles = (roles == null) ? new HashSet<>() : new HashSet<>(roles);
+        this.roles = (roles == null) ? new HashSet<>(Set.of(Role.USER)) : new HashSet<>(roles);
     }
 
     // Геттер и сеттер пустых ролей

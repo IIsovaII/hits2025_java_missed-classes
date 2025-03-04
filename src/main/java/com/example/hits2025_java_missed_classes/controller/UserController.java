@@ -18,7 +18,9 @@ public class UserController {
     private final BlacklistService blacklistService;
     private final UserService userService;
 
-    public UserController(AuthService authService, BlacklistService blacklistService, UserService userService) {
+    public UserController(AuthService authService,
+                          BlacklistService blacklistService,
+                          UserService userService) {
         this.authService = authService;
         this.blacklistService = blacklistService;
         this.userService = userService;
@@ -28,7 +30,7 @@ public class UserController {
     // TODO: заблокировать для неавторизированных и тех что в блеклисте, исправить формат вывода
     // Пока может вылетать ошибка когда вы с некорректным токеном в хедере попытаетесь выполнить этот запрос
     @GetMapping("/user")
-    public ResponseEntity<?> authenticateUser(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getUser(@RequestHeader("Authorization") String token) {
         User user = userService.getUserByToken(token);
         return ResponseEntity.ok(user);
     }
