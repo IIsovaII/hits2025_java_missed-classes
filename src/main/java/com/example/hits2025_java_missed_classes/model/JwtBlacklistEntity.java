@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "token_blacklist")
-public class TokenBlacklistEntity {
+public class JwtBlacklistEntity {
     @Id
     private String token;
 

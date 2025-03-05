@@ -30,109 +30,23 @@
         <java.version>21</java.version>
     </properties>
     <dependencies>
-        <!--&lt;!&ndash;		<dependency>&ndash;&gt;-->
-        <!--&lt;!&ndash;			<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-        <!--&lt;!&ndash;			<artifactId>spring-boot-starter-data-jdbc</artifactId>&ndash;&gt;-->
-        <!--&lt;!&ndash;		</dependency>&ndash;&gt;-->
-        <!--&lt;!&ndash;		2&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework.boot</groupId>-->
-        <!--			<artifactId>spring-boot-starter-data-jpa</artifactId>-->
-        <!--		</dependency>-->
-        <!--&lt;!&ndash;		<dependency>&ndash;&gt;-->
-        <!--&lt;!&ndash;			<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-        <!--&lt;!&ndash;			<artifactId>spring-boot-starter-jdbc</artifactId>&ndash;&gt;-->
-        <!--&lt;!&ndash;		</dependency>&ndash;&gt;-->
-        <!--&lt;!&ndash;		1&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework.boot</groupId>-->
-        <!--			<artifactId>spring-boot-starter-web</artifactId>-->
-        <!--		</dependency>-->
-        <!--&lt;!&ndash;		7&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.springdoc</groupId>-->
-        <!--			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>-->
-        <!--			<version>2.2.0</version>-->
-        <!--		</dependency>-->
-        <!--&lt;!&ndash;		8&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework.boot</groupId>-->
-        <!--			<artifactId>spring-boot-starter-security</artifactId>-->
-        <!--		</dependency>-->
-        <!--&lt;!&ndash;		9&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>io.jsonwebtoken</groupId>-->
-        <!--			<artifactId>jjwt-api</artifactId>-->
-        <!--			<version>0.11.5</version>-->
-        <!--		</dependency>-->
-        <!--&lt;!&ndash;		10&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>io.jsonwebtoken</groupId>-->
-        <!--			<artifactId>jjwt-impl</artifactId>-->
-        <!--			<version>0.11.5</version>-->
-        <!--			<scope>runtime</scope>-->
-        <!--		</dependency>-->
-        <!--&lt;!&ndash;		11&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>io.jsonwebtoken</groupId>-->
-        <!--			<artifactId>jjwt-jackson</artifactId>-->
-        <!--			<version>0.11.5</version>-->
-        <!--			<scope>runtime</scope>-->
-        <!--		</dependency>-->
-        <!--&lt;!&ndash;		<dependency>&ndash;&gt;-->
-        <!--&lt;!&ndash;			<groupId>javax.xml.bind</groupId>&ndash;&gt;-->
-        <!--&lt;!&ndash;			<artifactId>jaxb-api</artifactId>&ndash;&gt;-->
-        <!--&lt;!&ndash;			<version>2.3.1</version>&ndash;&gt;-->
-        <!--&lt;!&ndash;		</dependency>&ndash;&gt;-->
-        <!--&lt;!&ndash;		<dependency>&ndash;&gt;-->
-        <!--&lt;!&ndash;			<groupId>io.swagger.core.v3</groupId>&ndash;&gt;-->
-        <!--&lt;!&ndash;			<artifactId>swagger-annotations</artifactId>&ndash;&gt;-->
-        <!--&lt;!&ndash;			<version>2.2.15</version>&ndash;&gt;-->
-        <!--&lt;!&ndash;		</dependency>&ndash;&gt;-->
-        <!--&lt;!&ndash;		3&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>com.h2database</groupId>-->
-        <!--			<artifactId>h2</artifactId>-->
-        <!--			<scope>runtime</scope>-->
-        <!--		</dependency>-->
-        <!--&lt;!&ndash;		4&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.postgresql</groupId>-->
-        <!--			<artifactId>postgresql</artifactId>-->
-        <!--			<scope>runtime</scope>-->
-        <!--		</dependency>-->
-        <!--		&lt;!&ndash; 5 &ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework.boot</groupId>-->
-        <!--			<artifactId>spring-boot-starter-validation</artifactId>-->
-        <!--		</dependency>-->
-        <!--&lt;!&ndash;		6&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.apache.commons</groupId>-->
-        <!--			<artifactId>commons-lang3</artifactId>-->
-        <!--		</dependency>-->
-        <!--&lt;!&ndash;		12&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.projectlombok</groupId>-->
-        <!--			<artifactId>lombok</artifactId>-->
-        <!--			<optional>true</optional>-->
-        <!--		</dependency>-->
-        <!--&lt;!&ndash;		11&ndash;&gt;-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework.boot</groupId>-->
-        <!--			<artifactId>spring-boot-starter-test</artifactId>-->
-        <!--			<scope>test</scope>-->
-        <!--		</dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- База данных -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -143,57 +57,53 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- Утилиты -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.2.0</version>
-        </dependency>
-
-        <!-- Безопасность -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version>
-        </dependency>
-
-        <!-- Тестирование -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Spring Boot Starter Security -->
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- Springdoc OpenAPI (Swagger) -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.5</version>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.5</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.12.5</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Jakarta Validation API -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
     </dependencies>
 

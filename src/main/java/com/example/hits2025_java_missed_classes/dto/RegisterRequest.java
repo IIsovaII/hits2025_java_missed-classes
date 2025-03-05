@@ -8,12 +8,11 @@ import java.util.Set;
 @Getter
 @Setter
 public class RegisterRequest {
-    private String name;
+    private String username;
+    private String email;
     private String surname;
     private String patronymic;
-    private String email;
     private String password;
-    private Set<String> roles;
 
     public RegisterRequest() {}
 }

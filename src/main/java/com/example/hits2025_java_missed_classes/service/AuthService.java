@@ -1,12 +1,17 @@
 package com.example.hits2025_java_missed_classes.service;
 
 import com.example.hits2025_java_missed_classes.dto.LoginRequest;
+import com.example.hits2025_java_missed_classes.dto.LoginResponse;
 import com.example.hits2025_java_missed_classes.dto.RegisterRequest;
-import com.example.hits2025_java_missed_classes.dto.TokenResponse;
+import com.example.hits2025_java_missed_classes.dto.RegisterResponse;
+import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
-import com.example.hits2025_java_missed_classes.security.JwtTokenProvider;
+import com.example.hits2025_java_missed_classes.security.CustomUserDetails;
+import com.example.hits2025_java_missed_classes.security.CustomUserDetailsService;
+import com.example.hits2025_java_missed_classes.security.JwtUtil;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,54 +19,53 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 public class AuthService {
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider tokenProvider;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(AuthenticationManager authenticationManager,
-                       JwtTokenProvider tokenProvider,
-                       UserRepository userRepository,
-                       PasswordEncoder passwordEncoder) {
-        this.authenticationManager = authenticationManager;
-        this.tokenProvider = tokenProvider;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private JwtUtil jwtUtil;
 
-        public TokenResponse authenticateUser(LoginRequest loginRequest) {
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public LoginResponse authenticate(LoginRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
+                        authRequest.getEmail(),
+                        authRequest.getPassword()
                 )
         );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String jwt = jwtUtil.generateToken(userDetails);
 
-        final String jwt = tokenProvider.generateToken(authentication);
-
-        return new TokenResponse(jwt);
+        return new LoginResponse(jwt);
     }
 
     @Transactional
-    public TokenResponse registerUser(RegisterRequest registerRequest) {
+    public RegisterResponse registerUser(RegisterRequest registerRequest) {
         // Проверка на отсутствие в БД пользователя с такой почтой
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            throw new RuntimeException("User with this email already exists.");
+            throw new RuntimeException("User with this username already exists.");
         }
 
         User user = new User();
-        user.setName(registerRequest.getName());
+        user.setUsername(registerRequest.getUsername());
+        user.setEmail(registerRequest.getEmail());
         user.setSurname(registerRequest.getSurname());
         user.setPatronymic(registerRequest.getPatronymic());
-        user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setRoles(registerRequest.getRoles());
-
+        user.setRoles(Collections.singletonList(Role.ROLE_USER));
         userRepository.save(user);
 
         Authentication authentication = authenticationManager.authenticate(
@@ -72,7 +76,8 @@ public class AuthService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        final String jwt = tokenProvider.generateToken(authentication);
-        return new TokenResponse(jwt);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String jwt = jwtUtil.generateToken(userDetails);
+        return new RegisterResponse(jwt);
     }
 }

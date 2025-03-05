@@ -1,31 +1,32 @@
 package com.example.hits2025_java_missed_classes.service;
 
-import com.example.hits2025_java_missed_classes.exception.ResourceNotFoundException;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
-import com.example.hits2025_java_missed_classes.security.JwtTokenProvider;
+import com.example.hits2025_java_missed_classes.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public UserService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
-        this.userRepository = userRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    public User getUserById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-    }
-
-    public User getUserByToken(String token) {
-        String jwtToken = token.substring(7);
-        UUID id = jwtTokenProvider.getUserIdFromJWT(jwtToken);
-        return getUserById(id);
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 }

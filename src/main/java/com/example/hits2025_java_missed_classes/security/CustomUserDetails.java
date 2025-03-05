@@ -6,22 +6,21 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.UUID;
+import java.util.List;
 import java.util.stream.Collectors;
 
-// TODO: написано коряво, возможно функции где-то в других файлах дублируются - потом подчистить
-public class MyUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private final User user;
 
-    public MyUserDetails(User user) {
+    public CustomUserDetails(User user) {
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role)) // Префикс "ROLE_" обязателен для Spring Security
+                .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toList());
     }
 
@@ -30,13 +29,11 @@ public class MyUserDetails implements UserDetails {
         return user.getPassword();
     }
 
-    public UUID getId() {
-        return user.getId();
-    }
-
     @Override
     public String getUsername() {
-        return user.getEmail(); // Используем email как username
+        return user.getEmail();
+        // У нас в приложении username будет email
+        // именно email определяет пользователя
     }
 
     @Override
