@@ -1,5 +1,6 @@
 package com.example.hits2025_java_missed_classes.service;
 
+import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
 import com.example.hits2025_java_missed_classes.security.JwtUtil;
@@ -21,6 +22,24 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtUtil jwtUtil;
+
+    public boolean addRoleById(UUID id, Role role) {
+        User user = userRepository.getReferenceById(id);
+        List<Role> roles = user.getRoles();
+        roles.add(role);
+        user.setRoles(roles);
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean deleteRoleById(UUID id, Role role) {
+        User user = userRepository.getReferenceById(id);
+        List<Role> roles = user.getRoles();
+        roles.remove(role);
+        user.setRoles(roles);
+        userRepository.save(user);
+        return true;
+    }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
