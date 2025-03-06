@@ -26,11 +26,14 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
 
     // TODO: короче пока проблемки с тем что в сваггере все еще возможно отправить запрос на ulr требующий авторизации, возможно это нужно прописывать перед самими эндпоинтами и вылетает вместо 401 ошибки 403. В целом 403 +- подходит,но лучше 401. Как поменять тип ошибки не знаю, тк 403 вылетает благодаря .anyRequest().authenticated()
     @Bean

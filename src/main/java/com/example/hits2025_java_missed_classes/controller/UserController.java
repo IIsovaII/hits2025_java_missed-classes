@@ -24,7 +24,6 @@ import java.util.Optional;
 @RequestMapping("/account")
 @Tag(name = "User")
 public class UserController {
-    private final UserService userService;
     private final AuthService authService;
     private final JwtBlacklistService jwtBlacklistService;
     private final JwtUtil jwtUtil;
@@ -32,7 +31,6 @@ public class UserController {
 
     public UserController(
             UserService userService, AuthService authService, JwtBlacklistService jwtBlacklistService, JwtUtil jwtUtil, UserRepository userRepository) {
-        this.userService = userService;
         this.authService = authService;
         this.jwtBlacklistService = jwtBlacklistService;
         this.jwtUtil = jwtUtil;
