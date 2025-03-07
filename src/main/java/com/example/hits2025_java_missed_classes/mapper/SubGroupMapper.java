@@ -12,4 +12,8 @@ public class SubGroupMapper {
     public SubGroupDTO toDTO(SubGroup subGroup) {
         return new SubGroupDTO(subGroup.getName());
     }
+
+    public SubGroup toModel(SubGroupDTO subGroupDTO) {
+        return new SubGroup();
+    }
 }

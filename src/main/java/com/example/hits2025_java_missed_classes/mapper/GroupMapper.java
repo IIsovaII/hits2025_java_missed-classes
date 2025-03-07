@@ -15,7 +15,11 @@ public class GroupMapper {
     SubGroupMapper subGroupMapper;
 
     public GroupDTO toDTO(Group group) {
-        return new GroupDTO(group.getGroupName()
+        return new GroupDTO(group.getName()
                 ,group.getSubGroups().stream().map(g -> subGroupMapper.toDTO(g)).collect(Collectors.toList()));
+    }
+
+    public Group toModel(GroupDTO groupDto) {
+        return new Group();
     }
 }

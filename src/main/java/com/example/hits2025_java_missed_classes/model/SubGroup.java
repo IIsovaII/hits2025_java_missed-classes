@@ -9,13 +9,11 @@ import lombok.Setter;
 @Setter
 @Table(name = "sub_group")
 public class SubGroup {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group", nullable = false)
     private Group group;
 
+    @Id
     private String name;
 }

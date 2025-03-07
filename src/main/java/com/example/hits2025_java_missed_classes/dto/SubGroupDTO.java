@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SubGroupDTO {
-    private String name;
+    final private String name;
 }
