@@ -23,7 +23,9 @@ public class User {
     private String surname;
     private String patronymic;
     private String password;
-
+    private UUID groupId;
+    @ManyToMany
+    private List<SubGroup> subGroupId;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private List<Role> roles; // можно List<String>
