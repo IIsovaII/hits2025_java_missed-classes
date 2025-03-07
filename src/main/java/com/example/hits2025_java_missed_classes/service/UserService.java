@@ -3,8 +3,11 @@ package com.example.hits2025_java_missed_classes.service;
 import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
+import com.example.hits2025_java_missed_classes.security.CustomUserDetailsService;
 import com.example.hits2025_java_missed_classes.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,5 +50,13 @@ public class UserService {
 
     public User getUserById(UUID id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userRepository
+                .findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("Unable to find user with email: " + username));
     }
 }
