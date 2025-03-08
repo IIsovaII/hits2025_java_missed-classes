@@ -28,9 +28,9 @@ public class User {
     @ManyToMany
     private List<Group> groups;
     @ManyToMany
-    private List<SubGroup> subGroupId;
+    private List<SubGroup> subgroups;
     @ManyToMany
-    private List<SubGroup> favSubGroupId;
+    private List<SubGroup> favSubgroups;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private List<Role> roles;

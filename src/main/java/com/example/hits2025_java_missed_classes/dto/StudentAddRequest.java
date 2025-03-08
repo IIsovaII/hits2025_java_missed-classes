@@ -11,6 +11,6 @@ import java.util.UUID;
 @Setter
 public class StudentAddRequest {
     private UUID userId;
-    private List<GroupDTO> groups;
-    private List<SubGroupDTO> subGroup;
+    private String groupName;
+    private UUID subGroupId;
 }

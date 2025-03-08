@@ -37,38 +37,58 @@ public class GroupController {
     private UserRepository userRepository;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/favourite/add")
+    @PostMapping("/favourite/group/add")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public ResponseEntity<?> addGroup(@RequestBody List<GroupDTO> groups, @RequestHeader("Authorization")String token ) {
+    public ResponseEntity<?> addGroup(@RequestBody  List<GroupDTO> groups, @RequestHeader("Authorization")String token ) {
         token = token.substring(7);
         String username = jwtUtil.extractUsername(token);
         Optional<User> user = userRepository.findByEmail(username);
-        groupService.addGroupToFav(user.get().getId(),groups, null);
+        groupService.addGroupToFav(user.get().getId(),groups);
         return null;
     }
 
     @PostMapping("/favourite/subGroup/add")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public ResponseEntity<?> addSubGroup(@RequestBody List<SubGroupDTO> subGroupId, @RequestHeader("Authorization")String token ) {
+    public ResponseEntity<?> addSubGroup(@RequestBody List<SubGroupDTO> subGroups, @RequestHeader("Authorization")String token ) {
         token = token.substring(7);
         String username = jwtUtil.extractUsername(token);
         Optional<User> user = userRepository.findByEmail(username);
 
-        groupService.addGroupToFav(user.get().getId(), null, subGroupId);
+        groupService.addSubGroupToFav(user.get().getId(), subGroups);
         return null;
     }
 
-    @DeleteMapping("/favourite/delete")
+    @DeleteMapping("/favourite/group/delete")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public void deleteStudent(@RequestBody List<Group> groups, @RequestHeader("Authorization")String token ) {
+    public void deleteGroupFromFav(@RequestBody String groupName, @RequestHeader("Authorization")String token ) {
         token = token.substring(7);
         String username = jwtUtil.extractUsername(token);
         Optional<User> user = userRepository.findByEmail(username);
-        groupService.deleteGroupFromFav(user.get().getId(), groups);
+        groupService.deleteGroupFromFav(user.get().getId(), groupName);
+    }
+
+    @DeleteMapping("/favourite/subGroup/delete")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public void deleteSubGroupFromFav(@RequestBody UUID subGroupId, @RequestHeader("Authorization")String token ) {
+        token = token.substring(7);
+        String username = jwtUtil.extractUsername(token);
+        Optional<User> user = userRepository.findByEmail(username);
+        groupService.deleteSubGroupFromFav(user.get().getId(), subGroupId);
+    }
+
+    @GetMapping("/favourite")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public List<GroupDTO> getFavouriteGroup(@RequestHeader("Authorization")String token ) {
+        token = token.substring(7);
+        String username = jwtUtil.extractUsername(token);
+        Optional<User> user = userRepository.findByEmail(username);
+        return groupService.getFavGroups(user.get().getId());
+    }
+
+    @GetMapping("/favourite/searchGroup")
+    public List<GroupDTO> getGroupsByName(@RequestParam String groupName) {
+        return groupService.getGroups(groupName);
     }
 }
