@@ -19,7 +19,8 @@ public class StudentDto {
 
     private String patronymic;
 
-    private List<String> groupNames;
+    @NotNull
+    private String groupName;
 
     private List<String> subgroupNames;
 }

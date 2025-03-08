@@ -13,7 +13,6 @@ public class GantStudentItemDto {
     String surname;
     @NotNull
     String name;
-    @NotNull
     String patronymic;
     List<GantMissRequestItemDto> requests;
 }

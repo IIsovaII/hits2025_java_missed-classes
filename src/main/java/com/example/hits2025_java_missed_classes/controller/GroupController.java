@@ -1,5 +1,6 @@
 package com.example.hits2025_java_missed_classes.controller;
 
+/*
 import com.example.hits2025_java_missed_classes.dto.GroupDTO;
 import com.example.hits2025_java_missed_classes.dto.StudentAddRequest;
 import com.example.hits2025_java_missed_classes.dto.SubGroupDTO;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-/*
+
 @RestController
 @RequestMapping("/group")
 @Tag(name = "group")

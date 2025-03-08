@@ -30,7 +30,7 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "group_name")
     private Group group;
-    @Column(name = "group_name")
+    @Column(name = "group_name", insertable=false, updatable=false)
     private String groupName;
 
     @ManyToMany

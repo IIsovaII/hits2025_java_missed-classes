@@ -63,8 +63,8 @@ public class StudentsController {
         );
     }
 
-    @Operation(summary = "Get all students (for teachers and dean workers)", description = "Get paged list of filtered students")
-    @GetMapping()
+    @Operation(summary = "Get all students gant diagram (for teachers and dean workers)", description = "Get paged gant diagram of filtered students")
+    @GetMapping("/gant")
     @PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_DEANWORKER')")
     public GantResponseDto GetGantResponse(
             @Schema(description = "filter by specific group (by given prefix)")
