@@ -13,8 +13,10 @@ import java.util.UUID;
 @Table(name = "group")
 public class Group {
     @Id
-    private UUID name;
+    private String name;
 
+    @ManyToMany
+    private List<User> users;
     @OneToMany(mappedBy = "group",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SubGroup> subGroups;
 }

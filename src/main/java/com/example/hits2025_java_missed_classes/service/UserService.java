@@ -44,6 +44,10 @@ public class UserService {
         return true;
     }
 
+//    public UUID currentUserId(){
+//        return userId;
+//    }
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
