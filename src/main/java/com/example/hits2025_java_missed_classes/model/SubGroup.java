@@ -5,20 +5,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "sub_group")
 public class SubGroup {
+    @Id
+    private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "group", nullable = false)
+    @JoinColumn(name = "group_name", nullable = false)
     private Group group;
 
     @ManyToMany
     private List<User> user;
 
-    @Id
     private String name;
 }

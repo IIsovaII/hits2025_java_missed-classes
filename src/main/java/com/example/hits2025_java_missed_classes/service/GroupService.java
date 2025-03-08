@@ -1,7 +1,10 @@
 package com.example.hits2025_java_missed_classes.service;
 
+import com.example.hits2025_java_missed_classes.dto.GroupDTO;
 import com.example.hits2025_java_missed_classes.dto.SubGroupDTO;
+import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
 import com.example.hits2025_java_missed_classes.mapper.SubGroupMapper;
+import com.example.hits2025_java_missed_classes.model.Group;
 import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
@@ -21,16 +24,24 @@ public class GroupService {
     @Autowired
     SubGroupMapper subGroupMapper;
 
-    public boolean addGroupToFav(UUID userId,UUID groupId, List<SubGroupDTO> subGroups) {
+    @Autowired
+    GroupMapper groupMapper;
+
+    public boolean addGroupToFav(UUID userId, List<GroupDTO> groups, List<SubGroupDTO> subGroups) {
 
         User user = userRepository.getReferenceById(userId);
-        if(groupId != null) {
-            user.setGroupId(groupId);
+        if(!groups.isEmpty()) {
+            user.setFavGroups(groups.stream().map(s->groupMapper.toModel(s)).collect(Collectors.toList()));
         }
         if(!subGroups.isEmpty()) {
-            user.setSubGroupId(subGroups.stream().map(s -> subGroupMapper.toModel(s)).collect(Collectors.toList()));
+            user.setFavSubGroupId(subGroups.stream().map(s -> subGroupMapper.toModel(s)).collect(Collectors.toList()));
         }
         userRepository.save(user);
         return true;
+    }
+
+    public boolean deleteGroupFromFav(UUID userId, List<Group> groups) {
+        User user = userRepository.getReferenceById(userId);
+        user.setGroupName(groups);
     }
 }

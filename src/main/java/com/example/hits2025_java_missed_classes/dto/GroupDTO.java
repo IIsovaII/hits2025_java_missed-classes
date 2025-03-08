@@ -9,6 +9,6 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 public class GroupDTO {
-    final private UUID name;
+    final private String name;
     final private List<SubGroupDTO> subGroups;
 }

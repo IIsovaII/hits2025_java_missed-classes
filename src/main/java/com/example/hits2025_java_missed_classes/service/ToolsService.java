@@ -1,11 +1,14 @@
 package com.example.hits2025_java_missed_classes.service;
 
+import com.example.hits2025_java_missed_classes.dto.GroupDTO;
 import com.example.hits2025_java_missed_classes.dto.SubGroupDTO;
+import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
 import com.example.hits2025_java_missed_classes.mapper.SubGroupMapper;
 import com.example.hits2025_java_missed_classes.model.Group;
 import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.SubGroup;
 import com.example.hits2025_java_missed_classes.model.User;
+import com.example.hits2025_java_missed_classes.repository.SubGroupRepository;
 import com.example.hits2025_java_missed_classes.repository.ToolsRepository;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,21 +20,28 @@ import java.util.stream.Collectors;
 
 @Service
 public class ToolsService {
-    final ToolsRepository repository;
+    final ToolsRepository toolsRepository;
+    final SubGroupRepository subGroupRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     SubGroupMapper subGroupMapper;
-    public ToolsService(ToolsRepository repository) {
-        this.repository = repository;
+    @Autowired
+    GroupMapper groupMapper;
+    public ToolsService(ToolsRepository repository, SubGroupRepository subGroupRepository) {
+        this.toolsRepository = repository;
+        this.subGroupRepository = subGroupRepository;
     }
 
-    public boolean addStudentToGroup(UUID studentId, Role role, UUID groupId, List<SubGroupDTO> subGroups) {
+    public boolean addStudentToGroup(UUID studentId, Role role, List<GroupDTO> groups, List<SubGroupDTO> subGroups) {
         User user = userRepository.getReferenceById(studentId);
         List<Role> roles = user.getRoles();
         roles.add(role);
         user.setRoles(roles);
-        user.setGroupId(groupId);
+        if(!groups.isEmpty()) {
+            user.setGroups(groups.stream().map(s -> groupMapper.toModel(s)).collect(Collectors.toList()));
+        }
+
         if(!subGroups.isEmpty()) {
             user.setSubGroupId(subGroups.stream().map(s -> subGroupMapper.toModel(s)).collect(Collectors.toList()));
         }
@@ -49,10 +59,14 @@ public class ToolsService {
     }
 
     public void addGroup(Group group) {
-        repository.save(group);
+        toolsRepository.save(group);
     }
 
-    public void deleteGroupById(UUID id) {
-        repository.deleteById(id);
+    public void deleteGroupByName(String name) {
+        toolsRepository.deleteByName(name);
+    }
+
+    public void deleteSubGroupByName(UUID subGroupName) {
+        subGroupRepository.deleteById(subGroupName);
     }
 }

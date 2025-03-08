@@ -5,6 +5,7 @@ import com.example.hits2025_java_missed_classes.dto.StudentAddRequest;
 import com.example.hits2025_java_missed_classes.dto.SubGroupDTO;
 import com.example.hits2025_java_missed_classes.dto.TeacherAddRequest;
 import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
+import com.example.hits2025_java_missed_classes.model.Group;
 import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.SubGroup;
 import com.example.hits2025_java_missed_classes.model.User;
@@ -41,13 +42,13 @@ public class GroupController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/favourite/{groupId}/add")
+    @PostMapping("/favourite/add")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public ResponseEntity<?> addGroup(@PathVariable UUID groupId, @RequestHeader("Authorization")String token ) {
+    public ResponseEntity<?> addGroup(@RequestBody List<GroupDTO> groups, @RequestHeader("Authorization")String token ) {
         token = token.substring(7);
         String username = jwtUtil.extractUsername(token);
         Optional<User> user = userRepository.findByEmail(username);
-        groupService.addGroupToFav(user.get().getId(),groupId, null);
+        groupService.addGroupToFav(user.get().getId(),groups, null);
         return null;
     }
 
@@ -62,10 +63,12 @@ public class GroupController {
         return null;
     }
 
-    @DeleteMapping("/favourite/{id}/delete")
+    @DeleteMapping("/favourite/delete")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public void deleteStudent(@PathVariable UUID id) {
-        userService.deleteRoleById(id, Role.ROLE_STUDENT);
+    public void deleteStudent(@RequestBody List<Group> groups, @RequestHeader("Authorization")String token ) {
+        token = token.substring(7);
+        String username = jwtUtil.extractUsername(token);
+        Optional<User> user = userRepository.findByEmail(username);
+        groupService.deleteGroupFromFav(user.get().getId(), groups);
     }
-
 }

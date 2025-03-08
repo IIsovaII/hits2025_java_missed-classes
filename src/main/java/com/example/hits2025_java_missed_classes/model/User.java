@@ -23,10 +23,15 @@ public class User {
     private String surname;
     private String patronymic;
     private String password;
-    private UUID groupId;
+    @ManyToMany
+    private List<Group> favGroups;
+    @ManyToMany
+    private List<Group> groups;
     @ManyToMany
     private List<SubGroup> subGroupId;
+    @ManyToMany
+    private List<SubGroup> favSubGroupId;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private List<Role> roles; // можно List<String>
+    private List<Role> roles;
 }
