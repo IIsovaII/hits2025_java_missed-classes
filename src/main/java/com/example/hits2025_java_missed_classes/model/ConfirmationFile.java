@@ -27,6 +27,7 @@ public class ConfirmationFile {
 
     @Lob
     @NotBlank
+    //TODO hardcoded
     @Max(value = 10 * 1024 * 1024, message = "File size must be less than 10 MB")
     private byte[] data;
 

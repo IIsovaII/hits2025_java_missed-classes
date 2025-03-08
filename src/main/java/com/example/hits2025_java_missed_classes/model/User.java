@@ -26,8 +26,13 @@ public class User {
     private String password;
     @ManyToMany
     private List<Group> favGroups;
-    @ManyToMany
-    private List<Group> groups;
+
+    @ManyToOne
+    @JoinColumn(name = "group_name")
+    private Group group;
+    @Column(name = "group_name")
+    private String groupName;
+
     @ManyToMany
     private List<SubGroup> subGroup;
     @ManyToMany

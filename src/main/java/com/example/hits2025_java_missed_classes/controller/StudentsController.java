@@ -2,6 +2,7 @@ package com.example.hits2025_java_missed_classes.controller;
 
 import com.example.hits2025_java_missed_classes.dto.GantResponseDto;
 import com.example.hits2025_java_missed_classes.dto.StudentsPagedListDto;
+import com.example.hits2025_java_missed_classes.mapper.GantMapper;
 import com.example.hits2025_java_missed_classes.mapper.StudentsPagedListMapper;
 import com.example.hits2025_java_missed_classes.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,12 +26,14 @@ import java.util.List;
 @Tag(name = "Students")
 public class StudentsController {
 
-    final StudentsPagedListMapper studentsPagedListMapper;
+    private final StudentsPagedListMapper studentsPagedListMapper;
     private final StudentService studentService;
+    private final GantMapper gantMapper;
 
-    public StudentsController(StudentsPagedListMapper studentsPagedListMapper, StudentService studentService) {
+    public StudentsController(StudentsPagedListMapper studentsPagedListMapper, StudentService studentService, GantMapper gantMapper) {
         this.studentsPagedListMapper = studentsPagedListMapper;
         this.studentService = studentService;
+        this.gantMapper = gantMapper;
     }
 
     @Operation(summary = "Get all students (for teachers and dean workers)", description = "Get paged list of filtered students")
@@ -60,7 +63,6 @@ public class StudentsController {
         );
     }
 
-    /*
     @Operation(summary = "Get all students (for teachers and dean workers)", description = "Get paged list of filtered students")
     @GetMapping()
     @PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_DEANWORKER')")
@@ -73,18 +75,13 @@ public class StudentsController {
             @RequestParam(required = false) Boolean areFavoriteGroupsOnly,
             @Schema(description = "filter by student's surname")
             @RequestParam(required = false) String studentSurname,
-            @Schema(description = "filters requests with start date greater than this parameter")
-            @RequestParam(required = false) LocalDateTime startDate,
-            @Schema(description = "filters requests with end date lesser than this parameter")
-            @RequestParam(required = false) LocalDateTime endDate,
             @RequestParam(required = false, defaultValue = "0") int pageIndex,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
         var sortBy = Sort.by(Sort.Direction.ASC, "groupName");
         Pageable pageable = PageRequest.of(pageIndex, pageSize, sortBy);
 
-
-        return studentsPagedListMapper.toDto(
+        return gantMapper.toDto(
                 studentService.getPagedStudentsFiltered(
                         group,
                         subgroups,
@@ -92,5 +89,5 @@ public class StudentsController {
                         studentSurname,
                         pageable)
         );
-    }*/
+    }
 }

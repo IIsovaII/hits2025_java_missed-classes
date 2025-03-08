@@ -17,6 +17,7 @@ public class ConfirmationFileDto {
     private String name;
 
     @NotBlank
+    //TODO hardcoded
     @Max(value = 10 * 1024 * 1024, message = "File size must be less than 10 MB")
     @JsonProperty("file")
     private byte[] data;

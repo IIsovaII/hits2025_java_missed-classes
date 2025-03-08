@@ -1,8 +1,15 @@
 package com.example.hits2025_java_missed_classes.dto;
 
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.List;
 
+@Data
+@AllArgsConstructor
 public class GantGroupItemDto {
+    @NotNull
     String groupName;
-    List<GantSubgroupItemDto> subgroups;
+    List<GantStudentItemDto> students;
 }

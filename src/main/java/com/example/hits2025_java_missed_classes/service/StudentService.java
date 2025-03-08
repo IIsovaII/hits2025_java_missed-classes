@@ -47,32 +47,4 @@ public class StudentService {
 
         return userRepository.findAll(specification, pageable);
     }
-
-    public Page<User> getGantResult(
-            String groupName,
-            List<String> subGroups,
-            Boolean areFavoriteGroupsOnly,
-            String studentSurname,
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            Pageable pageable) {
-
-        User currentUser = userService.getCurrentUser();
-        Specification<User> specification = Specification.where(null);
-
-        if (currentUser.getRoles().contains(Role.ROLE_TEACHER) && areFavoriteGroupsOnly) {
-            specification = specification.and(StudentsSpecifications.isInTeacherFavorites(currentUser));
-        }
-        if (groupName != null) {
-            specification = specification.and(StudentsSpecifications.isInGroupByName(groupName));
-        }
-        if (subGroups != null) {
-            specification = specification.and(StudentsSpecifications.isInAnyOfSubgroupsByName(subGroups));
-        }
-        if (studentSurname != null) {
-            specification = specification.and(StudentsSpecifications.hasSurname(studentSurname));
-        }
-
-        return userRepository.findAll(specification, pageable);
-    }
 }

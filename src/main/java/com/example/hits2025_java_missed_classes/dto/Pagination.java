@@ -7,12 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Pagination {
-    @NotNull
     int page;
-
-    @NotNull
     int pageSize;
-
-    @NotNull
     int count;
 }
