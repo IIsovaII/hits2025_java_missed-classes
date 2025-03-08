@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
@@ -36,7 +37,7 @@ public class MissRequestsController {
         this.missRequestCreateModelMapper = missRequestCreateModelMapper;
     }
 
-    @Operation(summary = "Get all requests (for teachers and dean workers)", description = "Get paged list of filtered requests")
+    @Operation(summary = "Get all requests (for teachers and dean workers)", description = "Get paged list of filtered requests, ASC sorted by endDate")
     @GetMapping()
     @PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_DEANWORKER')")
     public MissRequestPagedListDto getAllFilteredRequestsPaged(
@@ -53,7 +54,8 @@ public class MissRequestsController {
             @RequestParam(required = false, defaultValue = "0") int pageIndex,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageIndex, pageSize);
+        Sort sort = Sort.by(Sort.Direction.ASC, "endDate");
+        Pageable pageable = PageRequest.of(pageIndex, pageSize, sort);
 
         return missRequestPagedListMapper.toDto(
                 missRequestsService.getPagedMissRequestFiltered(

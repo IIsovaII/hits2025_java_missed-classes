@@ -27,6 +27,7 @@ public class GroupService {
     @Autowired
     GroupMapper groupMapper;
 
+    /*
     public boolean addGroupToFav(UUID userId, List<GroupDTO> groups, List<SubGroupDTO> subGroups) {
 
         User user = userRepository.getReferenceById(userId);
@@ -38,10 +39,5 @@ public class GroupService {
         }
         userRepository.save(user);
         return true;
-    }
-
-    public boolean deleteGroupFromFav(UUID userId, List<Group> groups) {
-        User user = userRepository.getReferenceById(userId);
-        user.setGroupName(groups);
-    }
+    }*/
 }

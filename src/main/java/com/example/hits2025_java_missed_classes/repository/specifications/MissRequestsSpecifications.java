@@ -26,18 +26,17 @@ public class MissRequestsSpecifications {
         };
     }
 
-    public static Specification<MissRequest> madeByStudentFromSubgroupByName(List<String> subgroupName) {
+    public static Specification<MissRequest> madeByStudentFromSubgroupByName(List<String> subgroupNames) {
         return (root, query, criteriaBuilder) -> {
             Join<MissRequest, User> creatorJoin = root.join("creator");
             Join<User, SubGroup> subgroupsJoin = creatorJoin.join("subgroups");
 
-            Predicate[] predicates = new Predicate[subgroupName.size()];
+            Predicate[] predicates = new Predicate[subgroupNames.size()];
 
-            for (int i = 0; i < subgroupName.size(); i++) {
-                predicates[i] = criteriaBuilder.like(subgroupsJoin.get("name"), subgroupName.get(i) + "%");
+            for (int i = 0; i < subgroupNames.size(); i++) {
+                predicates[i] = criteriaBuilder.like(subgroupsJoin.get("name"), subgroupNames.get(i) + "%");
             }
 
-            //TODO надо узнать как называется сабгрупнейм и нет ли конфликта имен
             return criteriaBuilder.or(predicates);
         };
     }
