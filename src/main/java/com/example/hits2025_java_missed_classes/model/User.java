@@ -12,25 +12,35 @@ import java.util.UUID;
 @Setter
 @Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     private String username;
+
     @Column(unique = true, nullable = false)
     private String email;
+
     private String surname;
     private String patronymic;
     private String password;
+
     @ManyToMany
     private List<Group> favGroups;
-    @ManyToMany
-    private List<Group> groups;
+
+    @ManyToOne
+    @JoinColumn(name = "group_name")
+    private Group group;
+
+    @Column(name = "group_name", insertable = false, updatable = false)
+    private String groupName;
+
     @ManyToMany
     private List<SubGroup> subgroups;
+
     @ManyToMany
     private List<SubGroup> favSubgroups;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private List<Role> roles;

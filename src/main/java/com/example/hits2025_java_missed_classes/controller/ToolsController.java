@@ -51,7 +51,7 @@ public class ToolsController {
     @DeleteMapping("/student/delete/subGroup")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
     public void deleteStudentFromGroup(@RequestBody StudentAddRequest studentAddRequest) {
-        toolsService.deleteStudentFromGroup(studentAddRequest.getUserId(),studentAddRequest.getGroupName());
+        toolsService.deleteStudentFromGroup(studentAddRequest.getUserId());
     }
 
     @DeleteMapping("/student/delete/group")
@@ -62,16 +62,14 @@ public class ToolsController {
 
     @PostMapping("/group/add")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
-    public ResponseEntity<?> addGroup(@RequestBody GroupDTO group) {
+    public void addGroup(@RequestBody GroupDTO group) {
         toolsService.addGroup(groupMapper.toModel(group));
-        return null;
     }
 
     @PostMapping("/subGroup/add")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
-    public ResponseEntity<?> addGroup(@RequestBody SubGroupDTO subGroup) {
+    public void addGroup(@RequestBody SubGroupDTO subGroup) {
         toolsService.addSubGroup(subGroupMapper.toModel(subGroup));
-        return null;
     }
 
     @DeleteMapping("/group/delete")
@@ -89,16 +87,16 @@ public class ToolsController {
     @Operation(summary = "add teacher worker")
     @PostMapping("/teacher/{id}/add")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
-    public ResponseEntity<?> addTeacher(@PathVariable UUID id) {
+    public UUID addTeacher(@PathVariable UUID id) {
         userService.addRoleById(id, Role.ROLE_TEACHER);
-        return null;
+        return id;
     }
 
     @Operation(summary = "delete teacher worker")
     @DeleteMapping("/teacher/{id}/delete")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
-    public ResponseEntity<?> deleteTeacher(@PathVariable UUID id) {
+    public UUID deleteTeacher(@PathVariable UUID id) {
         userService.deleteRoleById(id, Role.ROLE_TEACHER);
-        return null;
+        return id;
     }
 }

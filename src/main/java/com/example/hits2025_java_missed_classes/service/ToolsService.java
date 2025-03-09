@@ -37,10 +37,7 @@ public class ToolsService {
         List<Role> roles = user.getRoles();
         roles.add(role);
         user.setRoles(roles);
-
-        Group group = toolsRepository.findByName(groupName);
-        List<Group> groups = user.getGroups();
-        groups.add(group);
+        user.setGroupName(groupName);
 
         userRepository.save(user);
     }
@@ -84,10 +81,9 @@ public class ToolsService {
         subGroupRepository.deleteById(subGroupName);
     }
 
-    public void deleteStudentFromGroup(UUID userId, String groupName) {
+    public void deleteStudentFromGroup(UUID userId) {
         User user = userRepository.getReferenceById(userId);
-        Group group = toolsRepository.findByName(groupName);
-        user.getGroups().remove(group);
+        user.setGroupName(null);
         userRepository.save(user);
     }
 
