@@ -1,6 +1,5 @@
 package com.example.hits2025_java_missed_classes.controller;
 
-/*
 import com.example.hits2025_java_missed_classes.dto.GroupDTO;
 import com.example.hits2025_java_missed_classes.dto.StudentAddRequest;
 import com.example.hits2025_java_missed_classes.dto.SubGroupDTO;
@@ -101,4 +100,3 @@ public class ToolsController {
         return id;
     }
 }
-*/

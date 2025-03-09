@@ -15,7 +15,7 @@ public class StudentMapper {
                 model.getSurname(),
                 model.getPatronymic(),
                 model.getGroupName(),
-                model.getSubGroup().stream().map(SubGroup::getName).toList()
+                model.getSubgroup().stream().map(SubGroup::getName).toList()
         );
     }
 }

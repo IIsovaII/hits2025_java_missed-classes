@@ -49,7 +49,7 @@ public class ToolsService {
         user.setRoles(roles);
 
         SubGroup subGroup = subGroupRepository.getReferenceById(subGroupsId);
-        List<SubGroup> subGroups = user.getSubgroups();
+        List<SubGroup> subGroups = user.getSubgroup();
         subGroups.add(subGroup);
 
         userRepository.save(user);
@@ -90,7 +90,7 @@ public class ToolsService {
     public void deleteStudentFromSubGroup(UUID userId, UUID subGroupId) {
         User user = userRepository.getReferenceById(userId);
         SubGroup subGroup = subGroupRepository.getReferenceById(subGroupId);
-        user.getSubgroups().remove(subGroup);
+        user.getSubgroup().remove(subGroup);
         userRepository.save(user);
     }
 }

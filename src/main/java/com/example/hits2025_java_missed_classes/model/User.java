@@ -34,7 +34,7 @@ public class User {
     private String groupName;
 
     @ManyToMany
-    private List<SubGroup> subGroup;
+    private List<SubGroup> subgroup;
 
     @ManyToMany
     private List<SubGroup> favSubgroups;
