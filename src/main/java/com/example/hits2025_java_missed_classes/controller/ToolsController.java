@@ -84,7 +84,6 @@ public class ToolsController {
         toolsService.deleteSubGroupByName(subGroupId);
     }
 
-    @Operation(summary = "add teacher worker")
     @PostMapping("/teacher/{id}/add")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
     public UUID addTeacher(@PathVariable UUID id) {
@@ -92,7 +91,6 @@ public class ToolsController {
         return id;
     }
 
-    @Operation(summary = "delete teacher worker")
     @DeleteMapping("/teacher/{id}/delete")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
     public UUID deleteTeacher(@PathVariable UUID id) {

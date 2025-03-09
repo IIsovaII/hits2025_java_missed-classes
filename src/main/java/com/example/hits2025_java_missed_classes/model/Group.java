@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name = "group")
+@Table(name = "education_group")
 public class Group {
     @Id
     private String name;
