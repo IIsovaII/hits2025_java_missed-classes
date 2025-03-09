@@ -56,6 +56,8 @@ public class GantMapper {
                 finalGantResponse.getGroups().add(currentGantGroupItem);
             }
 
+
+
             var newGantStudentItem = new GantStudentItemDto(
                     currentUser.getSurname(),
                     currentUser.getUsername(),

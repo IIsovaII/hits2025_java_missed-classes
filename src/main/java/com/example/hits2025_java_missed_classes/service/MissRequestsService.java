@@ -4,6 +4,7 @@ import com.example.hits2025_java_missed_classes.exception.RequestDeniedException
 import com.example.hits2025_java_missed_classes.model.*;
 import com.example.hits2025_java_missed_classes.repository.MissRequestsRepository;
 import com.example.hits2025_java_missed_classes.repository.specifications.MissRequestsSpecifications;
+import com.example.hits2025_java_missed_classes.repository.specifications.StudentsSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -115,10 +116,10 @@ public class MissRequestsService {
             specification = specification.and(MissRequestsSpecifications.madeByStudentBySurname(studentSurname));
         }
         if (startDate != null) {
-            specification = specification.and(MissRequestsSpecifications.hasStartDateGreaterThan(startDate));
+            specification = specification.and(MissRequestsSpecifications.hasEndDateGreaterThanOrEqualTo(startDate));
         }
         if (endDate != null) {
-            specification = specification.and(MissRequestsSpecifications.hasEndDateLesserThan(endDate));
+            specification = specification.and(MissRequestsSpecifications.hasStartDateLesserThanOrEqualTo(endDate));
         }
 
         return repository.findAll(specification, pageable);

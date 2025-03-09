@@ -8,7 +8,6 @@ import com.example.hits2025_java_missed_classes.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -59,6 +58,7 @@ public class StudentsController {
                         subgroups,
                         areFavoriteGroupsOnly,
                         studentSurname,
+                        null, null,
                         pageable)
         );
     }
@@ -75,6 +75,10 @@ public class StudentsController {
             @RequestParam(required = false) Boolean areFavoriteGroupsOnly,
             @Schema(description = "filter by student's surname")
             @RequestParam(required = false) String studentSurname,
+            @Schema(description = "filters requests with start date greater than this parameter")
+            @RequestParam(required = false) LocalDateTime startDate,
+            @Schema(description = "filters requests with end date lesser than this parameter")
+            @RequestParam(required = false) LocalDateTime endDate,
             @RequestParam(required = false, defaultValue = "0") int pageIndex,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
@@ -87,6 +91,8 @@ public class StudentsController {
                         subgroups,
                         areFavoriteGroupsOnly,
                         studentSurname,
+                        startDate,
+                        endDate,
                         pageable)
         );
     }

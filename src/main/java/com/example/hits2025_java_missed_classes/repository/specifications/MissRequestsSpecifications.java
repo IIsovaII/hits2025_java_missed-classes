@@ -51,6 +51,16 @@ public class MissRequestsSpecifications {
                 criteriaBuilder.lessThan(root.get("endDate"), endDate);
     }
 
+    public static Specification<MissRequest> hasEndDateGreaterThanOrEqualTo(LocalDateTime startDate) {
+        return (root, query, criteriaBuilder) ->
+            criteriaBuilder.greaterThanOrEqualTo(root.get("endDate"), startDate);
+    }
+
+    public static Specification<MissRequest> hasStartDateLesserThanOrEqualTo(LocalDateTime endDate) {
+        return (root, query, criteriaBuilder) ->
+            criteriaBuilder.lessThanOrEqualTo(root.get("startDate"), endDate);
+    }
+
     public static Specification<MissRequest> hasCreatorById(UUID id) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("creator").get("id"), id);

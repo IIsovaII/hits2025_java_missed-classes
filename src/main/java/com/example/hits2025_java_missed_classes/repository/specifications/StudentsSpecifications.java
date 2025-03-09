@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,5 +38,29 @@ public class StudentsSpecifications {
 
     public static Specification<User> isInTeacherFavorites(User teacher) {
         return isInAnyOfSubgroupsByName(teacher.getFavSubgroups().stream().map(SubGroup::getName).collect(Collectors.toList()));
+    }
+
+    public static Specification<User> hasMissRequestsInSegment(LocalDateTime startDate, LocalDateTime endDate) {
+        return (root, query, criteriaBuilder) -> {
+            Join<User, MissRequest> missRequestJoin = root.join("createdMissRequests");
+            return criteriaBuilder.and(
+                    criteriaBuilder.lessThanOrEqualTo(missRequestJoin.get("startDate"), endDate),
+                    criteriaBuilder.greaterThanOrEqualTo(missRequestJoin.get("endDate"), startDate)
+            );
+        };
+    }
+
+    public static Specification<User> hasEndDateGreaterThanOrEqualTo(LocalDateTime startDate) {
+        return (root, query, criteriaBuilder) -> {
+            Join<User, MissRequest> missRequestJoin = root.join("createdMissRequests");
+            return criteriaBuilder.greaterThanOrEqualTo(missRequestJoin.get("endDate"), startDate);
+        };
+    }
+
+    public static Specification<User> hasStartDateLesserThanOrEqualTo(LocalDateTime endDate) {
+        return (root, query, criteriaBuilder) -> {
+            Join<User, MissRequest> missRequestJoin = root.join("createdMissRequests");
+            return criteriaBuilder.lessThanOrEqualTo(missRequestJoin.get("startDate"), endDate);
+        };
     }
 }
