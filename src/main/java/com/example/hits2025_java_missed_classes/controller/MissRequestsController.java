@@ -39,7 +39,7 @@ public class MissRequestsController {
 
     @Operation(summary = "Get all requests (for teachers and dean workers)", description = "Get paged list of filtered requests, ASC sorted by endDate")
     @GetMapping()
-    //@PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_DEAN_WORKER')")
+    @PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_DEAN_WORKER')")
     public MissRequestPagedListDto getAllFilteredRequestsPaged(
             @Schema(description = "filter by specific group (by given prefix)")
             @RequestParam(required = false) String group,
@@ -70,28 +70,28 @@ public class MissRequestsController {
 
     @Operation(summary = "Create new request (for students)")
     @PostMapping()
-    //@PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     public UUID createMissRequest(@RequestBody MissRequestCreateModelDto model) {
         return missRequestsService.add(missRequestCreateModelMapper.toDomain(model)).getId();
     }
 
     @Operation(summary = "Edit request (for dean workers)")
     @PutMapping("/{id}/edit")
-    //@PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
+    @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
     public UUID editMissRequest(@PathVariable UUID id, @RequestBody MissRequestEditModelDto model) {
         return missRequestsService.edit(id, missRequestEditModelMapper.toDomain(model)).getId();
     }
 
     @Operation(summary = "Prolong existing request (for students)", description = "If request status is DENIED, than it does nothing, otherwise it prolongs request and also sets status to IN_QUEUE")
     @PutMapping("/{id}/prolong")
-    //@PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     public UUID prolongMissRequest(@PathVariable UUID id, @RequestBody MissRequestProlongModelDto model) {
         return missRequestsService.prolong(id, model.getNewEndDate()).getId();
     }
 
     @Operation(summary = "Get list of user requests (for students)")
     @GetMapping("/my")
-    //@PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     public MissRequestPagedListDto getMyRequestsPaged(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -105,7 +105,7 @@ public class MissRequestsController {
 
     @Operation(summary = "Attach confirmation documents to the request by it's id (for students and dean workers)")
     @PostMapping("/{id}/confirmation")
-    //@PreAuthorize("hasAnyRole('ROLE_STUDENT', 'ROLE_DEAN_WORKER')")
+    @PreAuthorize("hasAnyRole('ROLE_STUDENT', 'ROLE_DEAN_WORKER')")
     public UUID addConfirmation(
             @PathVariable UUID id,
             @RequestBody List<ConfirmationFileDto> model) {

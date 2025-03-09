@@ -29,19 +29,19 @@ import java.util.List;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private CustomUserDetailsService customUserDetailsService;
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    // TODO: короче пока проблемки с тем что в сваггере все еще возможно отправить запрос на ulr требующий авторизации, возможно это нужно прописывать перед самими эндпоинтами и вылетает вместо 401 ошибки 403. В целом 403 +- подходит,но лучше 401. Как поменять тип ошибки не знаю, тк 403 вылетает благодаря .anyRequest().authenticated()
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable).cors(cors -> cors.configurationSource(corsConfigurationSource())) // Настраиваем CORS
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(auth -> auth.requestMatchers("/account/login", "/account/register", "/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/h2-console/**").permitAll().anyRequest().authenticated());
+        http.csrf(AbstractHttpConfigurer::disable).cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(
+                        auth -> auth.requestMatchers("/account/login", "/account/register", "/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/h2-console/**").permitAll().anyRequest().authenticated());
 
         // Добавляем JWT-фильтр перед стандартным фильтром аутентификации - будто здесь должно вылететь 401
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -49,17 +49,17 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // настройка CORS
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Разрешить запросы типа с фронта - подправить по необходимости
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Разрешить методы - можно потом дописать еще необходимые
-        configuration.setAllowedHeaders(List.of("*")); // Разрешить все заголовки
-        configuration.setAllowCredentials(true); // Разрешить передачу куки и авторизационных данных
+        // TODO впустить фронт
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Применить CORS для всех путей
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 

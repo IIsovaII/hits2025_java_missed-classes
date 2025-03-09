@@ -17,7 +17,7 @@ public class MissRequestPagedListMapper {
 
     public MissRequestPagedListDto toDto(Page<MissRequest> domainPage) {
         return new MissRequestPagedListDto(
-                paginationMapper.toDTO(domainPage),
+                paginationMapper.toDto(domainPage),
                 domainPage
                         .getContent()
                         .stream()

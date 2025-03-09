@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PaginationMapper {
-    public <T> Pagination toDTO(Page<T> domainPage) {
+    public <T> Pagination toDto(Page<T> domainPage) {
         return new Pagination(
                 domainPage.getNumber(),
                 domainPage.getSize(),

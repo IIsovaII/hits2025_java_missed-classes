@@ -25,7 +25,7 @@ public class MissRequestMapper {
                 model.getStatus(),
                 model.getConfirmationFiles()
                         .stream()
-                        .map(confirmationFileMapper::toDTO)
+                        .map(confirmationFileMapper::toDto)
                         .collect(Collectors.toList())
         );
     }

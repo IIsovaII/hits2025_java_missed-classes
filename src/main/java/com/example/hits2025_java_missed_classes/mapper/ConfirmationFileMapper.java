@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ConfirmationFileMapper {
-    public ConfirmationFileDto toDTO(ConfirmationFile model) {
+    public ConfirmationFileDto toDto(ConfirmationFile model) {
         return new ConfirmationFileDto(
                 model.getName(),
                 model.getData()

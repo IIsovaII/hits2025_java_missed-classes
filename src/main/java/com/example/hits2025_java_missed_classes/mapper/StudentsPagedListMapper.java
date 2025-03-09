@@ -17,7 +17,7 @@ public class StudentsPagedListMapper {
 
     public StudentsPagedListDto toDto(Page<User> domainPage) {
         return new StudentsPagedListDto(
-                paginationMapper.toDTO(domainPage),
+                paginationMapper.toDto(domainPage),
                 domainPage
                         .getContent()
                         .stream()

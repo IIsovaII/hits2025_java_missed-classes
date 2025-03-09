@@ -1,9 +1,7 @@
 package com.example.hits2025_java_missed_classes.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +21,8 @@ public class User {
     private String name;
 
     @Column(unique = true)
-    @NotNull
+    @NotBlank
+    @Email
     private String email;
 
     @NotNull

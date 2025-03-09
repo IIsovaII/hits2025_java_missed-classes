@@ -1,10 +1,12 @@
 package com.example.hits2025_java_missed_classes.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SubgroupDTO {
-    final private String name;
+public class TokenResponseDto {
+    @NotNull
+    private String token;
 }

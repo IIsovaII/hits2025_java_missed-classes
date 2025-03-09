@@ -19,10 +19,10 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}") // Секретный ключ из application.properties
+    @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration}") // Время жизни токена (в миллисекундах)
+    @Value("${jwt.expiration}")
     private long expiration;
 
     // Генерация ключа для подписи токена
@@ -49,7 +49,7 @@ public class JwtUtil {
     }
 
     // Извлечение имени пользователя из токена - в нашем случае email
-    public String extractUsername(String token) {
+    public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -80,8 +80,8 @@ public class JwtUtil {
 
     // Валидация токена
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        final String email = extractEmail(token);
+        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public long getExpirationTimeFromToken(String token) {

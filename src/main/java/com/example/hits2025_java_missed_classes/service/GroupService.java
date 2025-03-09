@@ -1,7 +1,7 @@
 package com.example.hits2025_java_missed_classes.service;
 
-import com.example.hits2025_java_missed_classes.dto.GroupDTO;
-import com.example.hits2025_java_missed_classes.dto.SubgroupDTO;
+import com.example.hits2025_java_missed_classes.dto.GroupDto;
+import com.example.hits2025_java_missed_classes.dto.SubgroupDto;
 import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
 import com.example.hits2025_java_missed_classes.mapper.SubgroupMapper;
 import com.example.hits2025_java_missed_classes.model.Group;
@@ -21,31 +21,30 @@ import java.util.stream.Collectors;
 @Service
 public class GroupService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final SubgroupRepository subgroupRepository;
+    private final ToolsRepository toolsRepository;
+    private final SubgroupMapper subgroupMapper;
+    private final GroupMapper groupMapper;
 
-    @Autowired
-    SubgroupRepository subgroupRepository;
+    public GroupService(UserRepository userRepository, SubgroupRepository subgroupRepository, ToolsRepository toolsRepository, SubgroupMapper subgroupMapper, GroupMapper groupMapper) {
+        this.userRepository = userRepository;
+        this.subgroupRepository = subgroupRepository;
+        this.toolsRepository = toolsRepository;
+        this.subgroupMapper = subgroupMapper;
+        this.groupMapper = groupMapper;
+    }
 
-    @Autowired
-    ToolsRepository toolsRepository;
-
-    @Autowired
-    SubgroupMapper subgroupMapper;
-
-    @Autowired
-    GroupMapper groupMapper;
-
-    public void addGroupToFav(UUID userId, List<GroupDTO> groups) {
+    public void addGroupToFav(UUID userId, List<GroupDto> groups) {
 
         User user = userRepository.getReferenceById(userId);
-        user.setFavGroups(groups.stream().map(s -> groupMapper.toModel(s)).collect(Collectors.toList()));
+        user.setFavGroups(groups.stream().map(groupMapper::toModel).collect(Collectors.toList()));
         userRepository.save(user);
     }
 
-    public void addSubgroupToFav(UUID userId, List<SubgroupDTO> subgroups) {
+    public void addSubgroupToFav(UUID userId, List<SubgroupDto> subgroups) {
         User user = userRepository.getReferenceById(userId);
-        user.setFavSubgroups(subgroups.stream().map(s -> subgroupMapper.toModel(s)).collect(Collectors.toList()));
+        user.setFavSubgroups(subgroups.stream().map(subgroupMapper::toModel).collect(Collectors.toList()));
         userRepository.save(user);
     }
 
@@ -63,14 +62,14 @@ public class GroupService {
         userRepository.save(user);
     }
 
-    public List<GroupDTO> getFavGroups(UUID id) {
+    public List<GroupDto> getFavGroups(UUID id) {
         User user = userRepository.getReferenceById(id);
         List<Group> groups = user.getFavGroups();
-        return groups.stream().map(g -> groupMapper.toDTO(g)).toList();
+        return groups.stream().map(groupMapper::toDto).toList();
     }
 
-    public List<GroupDTO> getGroups(String groupName) {
+    public List<GroupDto> getGroups(String groupName) {
         List<Group> groups = toolsRepository.findByNameContainingIgnoreCase(groupName);
-        return groups.stream().map(g -> groupMapper.toDTO(g)).toList();
+        return groups.stream().map(groupMapper::toDto).toList();
     }
 }

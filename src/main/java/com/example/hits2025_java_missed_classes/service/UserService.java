@@ -21,16 +21,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void addRoleById(UUID id, Role role) {
+    public boolean addRoleById(UUID id, Role role) {
         User user = userRepository.getReferenceById(id);
         user.getRoles().add(role);
         userRepository.save(user);
+        return true;
     }
 
-    public void deleteRoleById(UUID id, Role role) {
+    public boolean deleteRoleById(UUID id, Role role) {
         User user = userRepository.getReferenceById(id);
         user.getRoles().remove(role);
         userRepository.save(user);
+        return true;
     }
 
     public User getCurrentUser() {

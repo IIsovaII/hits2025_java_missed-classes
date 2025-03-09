@@ -1,7 +1,7 @@
 package com.example.hits2025_java_missed_classes.service;
 
-import com.example.hits2025_java_missed_classes.dto.GroupDTO;
-import com.example.hits2025_java_missed_classes.dto.SubgroupDTO;
+import com.example.hits2025_java_missed_classes.dto.GroupDto;
+import com.example.hits2025_java_missed_classes.dto.SubgroupDto;
 import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
 import com.example.hits2025_java_missed_classes.mapper.SubgroupMapper;
 import com.example.hits2025_java_missed_classes.model.Group;
@@ -19,17 +19,13 @@ import java.util.UUID;
 
 @Service
 public class ToolsService {
-    final ToolsRepository toolsRepository;
-    final SubgroupRepository subgroupRepository;
+    private final ToolsRepository toolsRepository;
+    private final SubgroupRepository subgroupRepository;
     private final UserRepository userRepository;
-    final SubgroupMapper subgroupMapper;
-    final GroupMapper groupMapper;
 
-    public ToolsService(ToolsRepository repository, SubgroupRepository subgroupRepository, GroupMapper groupMapper, SubgroupMapper subgroupMapper, UserRepository userRepository) {
+    public ToolsService(ToolsRepository repository, SubgroupRepository subgroupRepository, UserRepository userRepository) {
         this.toolsRepository = repository;
         this.subgroupRepository = subgroupRepository;
-        this.groupMapper = groupMapper;
-        this.subgroupMapper = subgroupMapper;
         this.userRepository = userRepository;
     }
 

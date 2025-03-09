@@ -28,7 +28,7 @@ public class GantMapper {
 
         GantResponseDto finalGantResponse = new GantResponseDto(
                 new ArrayList<>(),
-                paginationMapper.toDTO(sortedByGroupsPage)
+                paginationMapper.toDto(sortedByGroupsPage)
         );
 
         if (domainStudents.isEmpty()) {

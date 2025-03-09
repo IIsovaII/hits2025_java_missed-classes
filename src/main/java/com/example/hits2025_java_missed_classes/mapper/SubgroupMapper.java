@@ -1,7 +1,7 @@
 package com.example.hits2025_java_missed_classes.mapper;
 
-import com.example.hits2025_java_missed_classes.dto.GroupDTO;
-import com.example.hits2025_java_missed_classes.dto.SubgroupDTO;
+import com.example.hits2025_java_missed_classes.dto.GroupDto;
+import com.example.hits2025_java_missed_classes.dto.SubgroupDto;
 import com.example.hits2025_java_missed_classes.model.Group;
 import com.example.hits2025_java_missed_classes.model.Subgroup;
 import org.springframework.stereotype.Component;
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class SubgroupMapper {
 
-    public SubgroupDTO toDTO(Subgroup subgroup) {
-        return new SubgroupDTO(subgroup.getName());
+    public SubgroupDto toDto(Subgroup subgroup) {
+        return new SubgroupDto(subgroup.getName());
     }
 
-    public Subgroup toModel(SubgroupDTO subgroupDTO) {
+    public Subgroup toModel(SubgroupDto subgroupDto) {
         return new Subgroup();
     }
 }
