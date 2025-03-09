@@ -16,8 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-/*
+
 @Service
 public class ToolsService {
     final ToolsRepository toolsRepository;
@@ -33,21 +32,29 @@ public class ToolsService {
         this.subGroupRepository = subGroupRepository;
     }
 
-    public boolean addStudentToGroup(UUID studentId, Role role, List<GroupDTO> groups, List<SubGroupDTO> subGroups) {
+    public void addStudentToGroup(UUID studentId, Role role, String groupName) {
         User user = userRepository.getReferenceById(studentId);
         List<Role> roles = user.getRoles();
         roles.add(role);
         user.setRoles(roles);
-        if(!groups.isEmpty()) {
-            user.setGroups(groups.stream().map(s -> groupMapper.toModel(s)).collect(Collectors.toList()));
-        }
+        user.setGroupName(groupName);
 
-        if(!subGroups.isEmpty()) {
-            user.setSubGroupId(subGroups.stream().map(s -> subGroupMapper.toModel(s)).collect(Collectors.toList()));
-        }
         userRepository.save(user);
-        return true;
     }
+
+    public void addStudentToSubGroup(UUID studentId, Role role, UUID subGroupsId) {
+        User user = userRepository.getReferenceById(studentId);
+        List<Role> roles = user.getRoles();
+        roles.add(role);
+        user.setRoles(roles);
+
+        SubGroup subGroup = subGroupRepository.getReferenceById(subGroupsId);
+        List<SubGroup> subGroups = user.getSubgroups();
+        subGroups.add(subGroup);
+
+        userRepository.save(user);
+    }
+
 
     public boolean addRoleById(UUID id, Role role) {
         User user = userRepository.getReferenceById(id);
@@ -62,6 +69,10 @@ public class ToolsService {
         toolsRepository.save(group);
     }
 
+    public void addSubGroup(SubGroup subGroup) {
+        subGroupRepository.save(subGroup);
+    }
+
     public void deleteGroupByName(String name) {
         toolsRepository.deleteByName(name);
     }
@@ -69,4 +80,17 @@ public class ToolsService {
     public void deleteSubGroupByName(UUID subGroupName) {
         subGroupRepository.deleteById(subGroupName);
     }
-}*/
+
+    public void deleteStudentFromGroup(UUID userId) {
+        User user = userRepository.getReferenceById(userId);
+        user.setGroupName(null);
+        userRepository.save(user);
+    }
+
+    public void deleteStudentFromSubGroup(UUID userId, UUID subGroupId) {
+        User user = userRepository.getReferenceById(userId);
+        SubGroup subGroup = subGroupRepository.getReferenceById(subGroupId);
+        user.getSubgroups().remove(subGroup);
+        userRepository.save(user);
+    }
+}

@@ -35,8 +35,10 @@ public class User {
 
     @ManyToMany
     private List<SubGroup> subGroup;
+
     @ManyToMany
     private List<SubGroup> favSubgroups;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private List<Role> roles; // можно List<String>

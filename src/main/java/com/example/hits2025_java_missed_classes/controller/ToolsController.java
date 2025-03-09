@@ -6,6 +6,7 @@ import com.example.hits2025_java_missed_classes.dto.StudentAddRequest;
 import com.example.hits2025_java_missed_classes.dto.SubGroupDTO;
 import com.example.hits2025_java_missed_classes.dto.TeacherAddRequest;
 import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
+import com.example.hits2025_java_missed_classes.mapper.SubGroupMapper;
 import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.SubGroup;
 import com.example.hits2025_java_missed_classes.service.ToolsService;
@@ -31,25 +32,45 @@ public class ToolsController {
     private GroupMapper groupMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private SubGroupMapper subGroupMapper;
 
-    @PostMapping("/student/add")
+    @PostMapping("/student/add/group")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
-    public ResponseEntity<?> addStudent(@RequestBody StudentAddRequest studentAddRequest) {
-        toolsService.addStudentToGroup(studentAddRequest.getUserId(), Role.ROLE_STUDENT, studentAddRequest.getGroups(), studentAddRequest.getSubGroup());
+    public ResponseEntity<?> addStudentGroup(@RequestBody StudentAddRequest studentAddRequest) {
+        toolsService.addStudentToGroup(studentAddRequest.getUserId(), Role.ROLE_STUDENT, studentAddRequest.getGroupName());
         return null;
     }
 
-    @DeleteMapping("/student/{id}/delete")
+    @PostMapping("/student/add/subGroup")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
-    public void deleteStudent(@PathVariable UUID id) {
-        userService.deleteRoleById(id, Role.ROLE_STUDENT);
+    public ResponseEntity<?> addStudentSubGroup(@RequestBody StudentAddRequest studentAddRequest) {
+        toolsService.addStudentToSubGroup(studentAddRequest.getUserId(), Role.ROLE_STUDENT, studentAddRequest.getSubGroupId());
+        return null;
+    }
+
+    @DeleteMapping("/student/delete/subGroup")
+    @PreAuthorize("hasRole('ROLE_DEANWORKER')")
+    public void deleteStudentFromGroup(@RequestBody StudentAddRequest studentAddRequest) {
+        toolsService.deleteStudentFromGroup(studentAddRequest.getUserId());
+    }
+
+    @DeleteMapping("/student/delete/group")
+    @PreAuthorize("hasRole('ROLE_DEANWORKER')")
+    public void deleteStudentFromSubGroup(@RequestBody StudentAddRequest studentAddRequest) {
+        toolsService.deleteStudentFromSubGroup(studentAddRequest.getUserId(),studentAddRequest.getSubGroupId());
     }
 
     @PostMapping("/group/add")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
-    public ResponseEntity<?> addGroup(@RequestBody GroupDTO group) {
+    public void addGroup(@RequestBody GroupDTO group) {
         toolsService.addGroup(groupMapper.toModel(group));
-        return null;
+    }
+
+    @PostMapping("/subGroup/add")
+    @PreAuthorize("hasRole('ROLE_DEANWORKER')")
+    public void addGroup(@RequestBody SubGroupDTO subGroup) {
+        toolsService.addSubGroup(subGroupMapper.toModel(subGroup));
     }
 
     @DeleteMapping("/group/delete")
@@ -65,19 +86,19 @@ public class ToolsController {
     }
 
     @Operation(summary = "add teacher worker")
-    @PostMapping("/teacher/add")
+    @PostMapping("/teacher/{id}/add")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
-    public ResponseEntity<?> addTeacher(@RequestBody TeacherAddRequest request) {
-        userService.addRoleById(UUID.fromString(request.getUserId()), Role.ROLE_TEACHER);
-        return null;
+    public UUID addTeacher(@PathVariable UUID id) {
+        userService.addRoleById(id, Role.ROLE_TEACHER);
+        return id;
     }
 
     @Operation(summary = "delete teacher worker")
     @DeleteMapping("/teacher/{id}/delete")
     @PreAuthorize("hasRole('ROLE_DEANWORKER')")
-    public ResponseEntity<?> deleteTeacher(@PathVariable UUID id) {
+    public UUID deleteTeacher(@PathVariable UUID id) {
         userService.deleteRoleById(id, Role.ROLE_TEACHER);
-        return null;
+        return id;
     }
 }
 */
