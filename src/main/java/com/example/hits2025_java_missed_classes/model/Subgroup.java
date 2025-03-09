@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "sub_group")
-public class SubGroup {
+public class Subgroup {
     @Id
     private UUID id;
 

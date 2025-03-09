@@ -24,7 +24,7 @@ public class StudentService {
 
     public Page<User> getPagedStudentsFiltered(
             String groupName,
-            List<String> subGroups,
+            List<String> subgroups,
             Boolean areFavoriteGroupsOnly,
             String studentSurname,
             LocalDateTime startDate,
@@ -40,8 +40,8 @@ public class StudentService {
         if (groupName != null) {
             specification = specification.and(StudentsSpecifications.isInGroupByName(groupName));
         }
-        if (subGroups != null) {
-            specification = specification.and(StudentsSpecifications.isInAnyOfSubgroupsByName(subGroups));
+        if (subgroups != null) {
+            specification = specification.and(StudentsSpecifications.isInAnyOfSubgroupsByName(subgroups));
         }
         if (studentSurname != null) {
             specification = specification.and(StudentsSpecifications.hasSurname(studentSurname));

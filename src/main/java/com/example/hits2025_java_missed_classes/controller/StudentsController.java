@@ -37,7 +37,7 @@ public class StudentsController {
 
     @Operation(summary = "Get all students (for teachers and dean workers)", description = "Get paged list of filtered students")
     @GetMapping()
-    @PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_DEANWORKER')")
+    //@PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_DEAN_WORKER')")
     public StudentsPagedListDto getAllFilteredRequestsPaged(
             @Schema(description = "filter by specific group (by given prefix)")
             @RequestParam(required = false) String group,
@@ -65,7 +65,7 @@ public class StudentsController {
 
     @Operation(summary = "Get all students gant diagram (for teachers and dean workers)", description = "Get paged gant diagram of filtered students")
     @GetMapping("/gant")
-    @PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_DEANWORKER')")
+    //@PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_DEAN_WORKER')")
     public GantResponseDto GetGantResponse(
             @Schema(description = "filter by specific group (by given prefix)")
             @RequestParam(required = false) String group,

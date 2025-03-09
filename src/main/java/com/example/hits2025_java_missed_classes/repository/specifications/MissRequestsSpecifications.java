@@ -1,7 +1,7 @@
 package com.example.hits2025_java_missed_classes.repository.specifications;
 
 import com.example.hits2025_java_missed_classes.model.MissRequest;
-import com.example.hits2025_java_missed_classes.model.SubGroup;
+import com.example.hits2025_java_missed_classes.model.Subgroup;
 import com.example.hits2025_java_missed_classes.model.User;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
@@ -29,7 +29,7 @@ public class MissRequestsSpecifications {
     public static Specification<MissRequest> madeByStudentFromSubgroupByName(List<String> subgroupNames) {
         return (root, query, criteriaBuilder) -> {
             Join<MissRequest, User> creatorJoin = root.join("creator");
-            Join<User, SubGroup> subgroupsJoin = creatorJoin.join("subgroups");
+            Join<User, Subgroup> subgroupsJoin = creatorJoin.join("subgroups");
 
             Predicate[] predicates = new Predicate[subgroupNames.size()];
 

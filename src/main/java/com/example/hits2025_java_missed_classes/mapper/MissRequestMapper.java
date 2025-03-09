@@ -1,11 +1,8 @@
 package com.example.hits2025_java_missed_classes.mapper;
 
 import com.example.hits2025_java_missed_classes.dto.MissRequestDto;
-import com.example.hits2025_java_missed_classes.dto.MissRequestPagedListDto;
-import com.example.hits2025_java_missed_classes.dto.Pagination;
 import com.example.hits2025_java_missed_classes.model.MissRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
@@ -18,6 +15,7 @@ public class MissRequestMapper {
         this.confirmationFileMapper = confirmationFileMapper;
     }
 
+    @Transactional
     public MissRequestDto toDto(MissRequest model) {
         return new MissRequestDto(
                 model.getId(),
@@ -28,7 +26,7 @@ public class MissRequestMapper {
                 model.getConfirmationFiles()
                         .stream()
                         .map(confirmationFileMapper::toDTO)
-                        .toList()
+                        .collect(Collectors.toList())
         );
     }
 }

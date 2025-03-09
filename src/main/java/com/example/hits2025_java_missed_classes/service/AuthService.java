@@ -21,24 +21,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class AuthService {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public LoginResponse authenticate(LoginRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
@@ -51,18 +50,21 @@ public class AuthService {
 
     @Transactional
     public RegisterResponse registerUser(RegisterRequest registerRequest) {
-        // Проверка на отсутствие в БД пользователя с такой почтой
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new RuntimeException("User with this username already exists.");
         }
 
         User user = new User();
-        user.setUsername(registerRequest.getUsername());
+        user.setName(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setSurname(registerRequest.getSurname());
         user.setPatronymic(registerRequest.getPatronymic());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setRoles(Collections.singletonList(Role.ROLE_USER));
+        user.setRoles(Set.of(Role.ROLE_USER));
+
+        //TODO УБРАТЬ
+        user.setRoles(Set.of(Role.ROLE_USER, Role.ROLE_ADMIN, Role.ROLE_DEAN_WORKER, Role.ROLE_STUDENT, Role.ROLE_TEACHER));
+
         userRepository.save(user);
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(registerRequest.getEmail(), registerRequest.getPassword()));
 

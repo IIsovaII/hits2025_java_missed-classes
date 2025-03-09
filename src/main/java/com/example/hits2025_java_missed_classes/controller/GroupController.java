@@ -3,12 +3,12 @@ package com.example.hits2025_java_missed_classes.controller;
 
 import com.example.hits2025_java_missed_classes.dto.GroupDTO;
 import com.example.hits2025_java_missed_classes.dto.StudentAddRequest;
-import com.example.hits2025_java_missed_classes.dto.SubGroupDTO;
+import com.example.hits2025_java_missed_classes.dto.SubgroupDTO;
 import com.example.hits2025_java_missed_classes.dto.TeacherAddRequest;
 import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
 import com.example.hits2025_java_missed_classes.model.Group;
 import com.example.hits2025_java_missed_classes.model.Role;
-import com.example.hits2025_java_missed_classes.model.SubGroup;
+import com.example.hits2025_java_missed_classes.model.Subgroup;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
 import com.example.hits2025_java_missed_classes.security.JwtUtil;
@@ -41,7 +41,7 @@ public class GroupController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/favourite/group/add")
-    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    //@PreAuthorize("hasRole('ROLE_TEACHER')")
     public ResponseEntity<?> addGroup(@RequestBody  List<GroupDTO> groups, @RequestHeader("Authorization")String token ) {
         token = token.substring(7);
         String username = jwtUtil.extractUsername(token);
@@ -50,19 +50,19 @@ public class GroupController {
         return null;
     }
 
-    @PostMapping("/favourite/subGroup/add")
-    @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public ResponseEntity<?> addSubGroup(@RequestBody List<SubGroupDTO> subGroups, @RequestHeader("Authorization")String token ) {
+    @PostMapping("/favourite/subgroup/add")
+    //@PreAuthorize("hasRole('ROLE_TEACHER')")
+    public ResponseEntity<?> addSubgroup(@RequestBody List<SubgroupDTO> subgroups, @RequestHeader("Authorization")String token ) {
         token = token.substring(7);
         String username = jwtUtil.extractUsername(token);
         Optional<User> user = userRepository.findByEmail(username);
 
-        groupService.addSubGroupToFav(user.get().getId(), subGroups);
+        groupService.addSubgroupToFav(user.get().getId(), subgroups);
         return null;
     }
 
     @DeleteMapping("/favourite/group/delete")
-    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    //@PreAuthorize("hasRole('ROLE_TEACHER')")
     public void deleteGroupFromFav(@RequestBody String groupName, @RequestHeader("Authorization")String token ) {
         token = token.substring(7);
         String username = jwtUtil.extractUsername(token);
@@ -70,17 +70,17 @@ public class GroupController {
         groupService.deleteGroupFromFav(user.get().getId(), groupName);
     }
 
-    @DeleteMapping("/favourite/subGroup/delete")
-    @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public void deleteSubGroupFromFav(@RequestBody UUID subGroupId, @RequestHeader("Authorization")String token ) {
+    @DeleteMapping("/favourite/subgroup/delete")
+    //@PreAuthorize("hasRole('ROLE_TEACHER')")
+    public void deleteSubgroupFromFav(@RequestBody UUID subgroupId, @RequestHeader("Authorization")String token ) {
         token = token.substring(7);
         String username = jwtUtil.extractUsername(token);
         Optional<User> user = userRepository.findByEmail(username);
-        groupService.deleteSubGroupFromFav(user.get().getId(), subGroupId);
+        groupService.deleteSubgroupFromFav(user.get().getId(), subgroupId);
     }
 
     @GetMapping("/favourite")
-    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    //@PreAuthorize("hasRole('ROLE_TEACHER')")
     public List<GroupDTO> getFavouriteGroup(@RequestHeader("Authorization")String token ) {
         token = token.substring(7);
         String username = jwtUtil.extractUsername(token);

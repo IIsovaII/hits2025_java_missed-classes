@@ -1,13 +1,13 @@
 package com.example.hits2025_java_missed_classes.service;
 
 import com.example.hits2025_java_missed_classes.dto.GroupDTO;
-import com.example.hits2025_java_missed_classes.dto.SubGroupDTO;
+import com.example.hits2025_java_missed_classes.dto.SubgroupDTO;
 import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
-import com.example.hits2025_java_missed_classes.mapper.SubGroupMapper;
+import com.example.hits2025_java_missed_classes.mapper.SubgroupMapper;
 import com.example.hits2025_java_missed_classes.model.Group;
-import com.example.hits2025_java_missed_classes.model.SubGroup;
+import com.example.hits2025_java_missed_classes.model.Subgroup;
 import com.example.hits2025_java_missed_classes.model.User;
-import com.example.hits2025_java_missed_classes.repository.SubGroupRepository;
+import com.example.hits2025_java_missed_classes.repository.SubgroupRepository;
 import com.example.hits2025_java_missed_classes.repository.ToolsRepository;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +25,13 @@ public class GroupService {
     private UserRepository userRepository;
 
     @Autowired
-    SubGroupRepository subGroupRepository;
+    SubgroupRepository subgroupRepository;
 
     @Autowired
     ToolsRepository toolsRepository;
 
     @Autowired
-    SubGroupMapper subGroupMapper;
+    SubgroupMapper subgroupMapper;
 
     @Autowired
     GroupMapper groupMapper;
@@ -43,9 +43,9 @@ public class GroupService {
         userRepository.save(user);
     }
 
-    public void addSubGroupToFav(UUID userId, List<SubGroupDTO> subGroups) {
+    public void addSubgroupToFav(UUID userId, List<SubgroupDTO> subgroups) {
         User user = userRepository.getReferenceById(userId);
-        user.setFavSubgroups(subGroups.stream().map(s -> subGroupMapper.toModel(s)).collect(Collectors.toList()));
+        user.setFavSubgroups(subgroups.stream().map(s -> subgroupMapper.toModel(s)).collect(Collectors.toList()));
         userRepository.save(user);
     }
 
@@ -56,10 +56,10 @@ public class GroupService {
         userRepository.save(user);
     }
 
-    public void deleteSubGroupFromFav(UUID userId, UUID subGroupId) {
+    public void deleteSubgroupFromFav(UUID userId, UUID subgroupId) {
         User user = userRepository.getReferenceById(userId);
-        SubGroup subGroup = subGroupRepository.getReferenceById(subGroupId);
-        user.getFavSubgroups().remove(subGroup);
+        Subgroup subgroup = subgroupRepository.getReferenceById(subgroupId);
+        user.getFavSubgroups().remove(subgroup);
         userRepository.save(user);
     }
 

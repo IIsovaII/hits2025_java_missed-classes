@@ -2,6 +2,7 @@ package com.example.hits2025_java_missed_classes.mapper;
 
 import com.example.hits2025_java_missed_classes.dto.ConfirmationFileDto;
 import com.example.hits2025_java_missed_classes.model.ConfirmationFile;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 @Component

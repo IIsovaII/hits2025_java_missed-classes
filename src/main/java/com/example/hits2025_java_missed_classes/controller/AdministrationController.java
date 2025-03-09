@@ -31,17 +31,17 @@ public class AdministrationController {
 
     @Operation(summary = "add dean worker")
     @PostMapping("/deansWorker/add")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> addDeanWorker(@RequestBody DeanAddRequest request) {
-        userService.addRoleById(UUID.fromString(request.getUserId()), Role.ROLE_DEANWORKER);
+        userService.addRoleById(UUID.fromString(request.getUserId()), Role.ROLE_DEAN_WORKER);
         return null;
     }
 
     @Operation(summary = "delete dean worker")
     @DeleteMapping("/deansWorker/delete")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteDeanWorker(@RequestBody DeanAddRequest request) {
-        userService.deleteRoleById(UUID.fromString(request.getUserId()), Role.ROLE_DEANWORKER);
+        userService.deleteRoleById(UUID.fromString(request.getUserId()), Role.ROLE_DEAN_WORKER);
         return null;
     }
 

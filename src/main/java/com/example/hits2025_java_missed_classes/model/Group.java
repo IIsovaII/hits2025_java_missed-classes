@@ -19,5 +19,5 @@ public class Group {
     private List<User> users;
 
     @OneToMany(mappedBy = "group",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<SubGroup> subGroups;
+    private List<Subgroup> subgroups;
 }

@@ -12,5 +12,5 @@ import java.util.UUID;
 public class StudentAddRequest {
     private UUID userId;
     private String groupName;
-    private UUID subGroupId;
+    private UUID subgroupId;
 }

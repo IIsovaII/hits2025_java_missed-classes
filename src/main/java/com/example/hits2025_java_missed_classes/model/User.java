@@ -1,12 +1,13 @@
 package com.example.hits2025_java_missed_classes.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
@@ -18,14 +19,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    private String username;
-    @Column(unique = true, nullable = false)
+    @NotNull
+    private String name;
+
+    @Column(unique = true)
+    @NotNull
     private String email;
+
+    @NotNull
     private String surname;
+
     private String patronymic;
+
+    @NotEmpty
+    @Size(min = 5, max = 64)
     private String password;
-    @ManyToMany
-    private List<Group> favGroups;
 
     @ManyToOne
     @JoinColumn(name = "group_name")
@@ -34,14 +42,17 @@ public class User {
     private String groupName;
 
     @ManyToMany
-    private List<SubGroup> subgroup;
+    private List<Subgroup> subgroup;
 
     @ManyToMany
-    private List<SubGroup> favSubgroups;
+    private List<Group> favGroups;
+
+    @ManyToMany
+    private List<Subgroup> favSubgroups;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private List<Role> roles; // можно List<String>
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "statusSetBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<MissRequest> reviewedMissRequests = new ArrayList<>();

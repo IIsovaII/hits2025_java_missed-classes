@@ -2,6 +2,7 @@ package com.example.hits2025_java_missed_classes.service;
 
 import com.example.hits2025_java_missed_classes.exception.RequestDeniedException;
 import com.example.hits2025_java_missed_classes.model.*;
+import com.example.hits2025_java_missed_classes.repository.ConfirmationFileRepository;
 import com.example.hits2025_java_missed_classes.repository.MissRequestsRepository;
 import com.example.hits2025_java_missed_classes.repository.specifications.MissRequestsSpecifications;
 import com.example.hits2025_java_missed_classes.repository.specifications.StudentsSpecifications;
@@ -18,10 +19,12 @@ import java.util.UUID;
 @Service
 public class MissRequestsService {
     final MissRequestsRepository repository;
+    final ConfirmationFileRepository confirmationFileRepository;
     private final UserService userService;
 
-    public MissRequestsService(MissRequestsRepository repository, UserService userService) {
+    public MissRequestsService(MissRequestsRepository repository, UserService userService, ConfirmationFileRepository confirmationFileRepository) {
         this.repository = repository;
+        this.confirmationFileRepository = confirmationFileRepository;
         this.userService = userService;
     }
 
@@ -35,7 +38,9 @@ public class MissRequestsService {
         missRequest.setStartDate(model.getStartDate());
         missRequest.setEndDate(model.getEndDate());
 
-        //TODO не уверен в этом моменте
+        model.getConfirmationFiles().forEach(confirmationFile ->
+            confirmationFile.setMissRequest(missRequest));
+
         missRequest.setConfirmationFiles(model.getConfirmationFiles());
         missRequest.setType(model.getType());
         missRequest.setCreator(userService.getCurrentUser());
@@ -93,7 +98,7 @@ public class MissRequestsService {
 
     public Page<MissRequest> getPagedMissRequestFiltered(
             String groupName,
-            List<String> subGroups,
+            List<String> subgroups,
             String studentSurname,
             LocalDateTime startDate,
             LocalDateTime endDate,
@@ -109,8 +114,8 @@ public class MissRequestsService {
         if (groupName != null) {
             specification = specification.and(MissRequestsSpecifications.madeByStudentFromGroupByName(groupName));
         }
-        if (subGroups != null) {
-            specification = specification.and(MissRequestsSpecifications.madeByStudentFromSubgroupByName(subGroups));
+        if (subgroups != null) {
+            specification = specification.and(MissRequestsSpecifications.madeByStudentFromSubgroupByName(subgroups));
         }
         if (studentSurname != null) {
             specification = specification.and(MissRequestsSpecifications.madeByStudentBySurname(studentSurname));

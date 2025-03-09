@@ -19,7 +19,7 @@ public class StudentsSpecifications {
 
     public static Specification<User> isInAnyOfSubgroupsByName(List<String> subgroupNames) {
         return (root, query, criteriaBuilder) -> {
-            Join<User, SubGroup> subgroupsJoin = root.join("subgroups");
+            Join<User, Subgroup> subgroupsJoin = root.join("subgroups");
 
             Predicate[] predicates = new Predicate[subgroupNames.size()];
 
@@ -37,7 +37,7 @@ public class StudentsSpecifications {
     }
 
     public static Specification<User> isInTeacherFavorites(User teacher) {
-        return isInAnyOfSubgroupsByName(teacher.getFavSubgroups().stream().map(SubGroup::getName).collect(Collectors.toList()));
+        return isInAnyOfSubgroupsByName(teacher.getFavSubgroups().stream().map(Subgroup::getName).collect(Collectors.toList()));
     }
 
     public static Specification<User> hasMissRequestsInSegment(LocalDateTime startDate, LocalDateTime endDate) {

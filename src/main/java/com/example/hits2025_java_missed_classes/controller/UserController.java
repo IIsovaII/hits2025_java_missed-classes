@@ -28,13 +28,15 @@ public class UserController {
     private final JwtBlacklistService jwtBlacklistService;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     public UserController(
-            UserService userService, AuthService authService, JwtBlacklistService jwtBlacklistService, JwtUtil jwtUtil, UserRepository userRepository) {
+            AuthService authService, JwtBlacklistService jwtBlacklistService, JwtUtil jwtUtil, UserRepository userRepository, UserService userService) {
         this.authService = authService;
         this.jwtBlacklistService = jwtBlacklistService;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     // TODO: на данный момент если в хедере на месте токена записана какая-то фигня типв "123" вылетит ошибка
@@ -49,8 +51,10 @@ public class UserController {
             // TODO: тут проверить что токен вообще валидный, чтобы не было 500 ошибки
             if (!jwtBlacklistService.isBlacklisted(token)) {
                 String username = jwtUtil.extractUsername(token); // тут username тоже email
-                Optional<User> user = userRepository.findByEmail(username);
-                return ResponseEntity.ok(user);
+                //TODO больно
+                //Optional<User> user = userRepository.findByEmail(username);
+                return ResponseEntity.ok(userService.getCurrentUser());
+                //return ResponseEntity.ok(user);
             } else {
                 // TODO: переписать ответ и выкинуть 401
                 return ResponseEntity.badRequest().body("Token is already blacklisted");

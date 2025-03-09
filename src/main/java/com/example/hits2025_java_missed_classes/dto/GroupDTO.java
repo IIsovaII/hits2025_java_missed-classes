@@ -10,5 +10,5 @@ import java.util.UUID;
 @AllArgsConstructor
 public class GroupDTO {
     final private String name;
-    final private List<SubGroupDTO> subGroups;
+    final private List<SubgroupDTO> subgroups;
 }
