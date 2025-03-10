@@ -41,12 +41,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<TokenResponseDto> registerUser(@RequestBody @Valid RegisterRequestDto request) {
+    public ResponseEntity<TokenResponseDto> registerUser(@Valid @RequestBody RegisterRequestDto request) {
         return ResponseEntity.ok(authService.registerUser(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> loginUser(@RequestBody @Valid LoginRequestDto request) {
+    public ResponseEntity<TokenResponseDto> loginUser(@Valid @RequestBody LoginRequestDto request) {
         return ResponseEntity.ok(authService.authenticate(request));
     }
 

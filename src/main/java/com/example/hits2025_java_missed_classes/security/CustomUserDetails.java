@@ -32,8 +32,6 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return user.getEmail();
-        // У нас в приложении username будет email
-        // именно email определяет пользователя
     }
 
     @Override
