@@ -46,7 +46,7 @@ public class AuthService {
     @Transactional
     public TokenResponseDto registerUser(RegisterRequestDto registerRequest) {
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            throw new EntityAlreadyExistsException("User with this username already exists.");
+            throw new EntityAlreadyExistsException("User with this email already exists.");
         }
 
         User user = new User();

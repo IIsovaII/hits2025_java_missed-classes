@@ -5,7 +5,10 @@ import com.example.hits2025_java_missed_classes.exception.base_status_code_excep
 import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.ForbiddenException;
 import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.InternalServerErrorException;
 import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.NotFoundException;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
@@ -27,6 +30,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InternalServerErrorException.class)
     public ErrorResponseDto handleInternalServerErrorException(InternalServerErrorException ex) {
+        return new ErrorResponseDto(ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ErrorResponseDto handleInternalServerErrorException(EntityNotFoundException ex) {
         return new ErrorResponseDto(ex.getMessage());
     }
 }
