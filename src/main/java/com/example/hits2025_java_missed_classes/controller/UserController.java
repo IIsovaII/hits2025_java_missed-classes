@@ -9,6 +9,7 @@ import com.example.hits2025_java_missed_classes.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,12 +39,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<TokenResponseDto> registerUser(@RequestBody RegisterRequestDto request) {
+    public ResponseEntity<TokenResponseDto> registerUser(@Valid @RequestBody RegisterRequestDto request) {
         return ResponseEntity.ok(authService.registerUser(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> loginUser(@RequestBody LoginRequestDto request) {
+    public ResponseEntity<TokenResponseDto> loginUser(@Valid @RequestBody LoginRequestDto request) {
         return ResponseEntity.ok(authService.authenticate(request));
     }
 

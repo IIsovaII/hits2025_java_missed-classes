@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/*
 @RestControllerAdvice
 class GlobalExceptionHandler {
     @ExceptionHandler(RequestDeniedException.class)
@@ -13,4 +12,4 @@ class GlobalExceptionHandler {
     String employeeNotFoundHandler(RequestDeniedException ex) {
         return ex.getMessage();
     }
-}*/
+}

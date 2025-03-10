@@ -12,7 +12,7 @@ public class RegisterRequestDto {
     private String username;
 
     @NotBlank
-    @Email
+    @Email(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")
     private String email;
 
     @NotNull
