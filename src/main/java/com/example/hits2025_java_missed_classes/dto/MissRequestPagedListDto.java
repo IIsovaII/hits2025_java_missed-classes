@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class MissRequestPagedListDto {
     @NotNull
-    Pagination pagination;
+    PaginationDto paginationDto;
 
     @NotNull
     List<MissRequestDto> requests;

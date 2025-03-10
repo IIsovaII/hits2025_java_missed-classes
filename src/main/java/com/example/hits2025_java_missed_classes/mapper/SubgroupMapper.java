@@ -6,14 +6,20 @@ import com.example.hits2025_java_missed_classes.model.Group;
 import com.example.hits2025_java_missed_classes.model.Subgroup;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class SubgroupMapper {
+
+
 
     public SubgroupDto toDto(Subgroup subgroup) {
         return new SubgroupDto(subgroup.getName());
     }
 
     public Subgroup toModel(SubgroupDto subgroupDto) {
-        return new Subgroup();
+        Subgroup subgroup = new Subgroup();
+        subgroup.setName(subgroupDto.getName());
+        return subgroup;
     }
 }

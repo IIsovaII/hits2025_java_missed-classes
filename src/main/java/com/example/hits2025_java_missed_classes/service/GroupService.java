@@ -24,41 +24,36 @@ public class GroupService {
     private final UserRepository userRepository;
     private final SubgroupRepository subgroupRepository;
     private final ToolsRepository toolsRepository;
-    private final SubgroupMapper subgroupMapper;
     private final GroupMapper groupMapper;
 
     public GroupService(UserRepository userRepository, SubgroupRepository subgroupRepository, ToolsRepository toolsRepository, SubgroupMapper subgroupMapper, GroupMapper groupMapper) {
         this.userRepository = userRepository;
         this.subgroupRepository = subgroupRepository;
         this.toolsRepository = toolsRepository;
-        this.subgroupMapper = subgroupMapper;
         this.groupMapper = groupMapper;
     }
 
-    public void addGroupToFav(UUID userId, List<GroupDto> groups) {
-
+    public void addGroupToFav(UUID userId, String groupName) {
         User user = userRepository.getReferenceById(userId);
-        user.setFavGroups(groups.stream().map(groupMapper::toModel).collect(Collectors.toList()));
+        user.getFavGroups().add(toolsRepository.getReferenceByName(groupName));
         userRepository.save(user);
     }
 
-    public void addSubgroupToFav(UUID userId, List<SubgroupDto> subgroups) {
+    public void addSubgroupToFav(UUID userId, UUID subgroupId) {
         User user = userRepository.getReferenceById(userId);
-        user.setFavSubgroups(subgroups.stream().map(subgroupMapper::toModel).collect(Collectors.toList()));
+        user.getFavSubgroups().add(subgroupRepository.getReferenceById(subgroupId));
         userRepository.save(user);
     }
 
     public void deleteGroupFromFav(UUID userId, String groupName) {
         User user = userRepository.getReferenceById(userId);
-        Group group = toolsRepository.findByName(groupName);
-        user.getFavGroups().remove(group);
+        user.getFavGroups().remove(toolsRepository.getReferenceByName(groupName));
         userRepository.save(user);
     }
 
     public void deleteSubgroupFromFav(UUID userId, UUID subgroupId) {
         User user = userRepository.getReferenceById(userId);
-        Subgroup subgroup = subgroupRepository.getReferenceById(subgroupId);
-        user.getFavSubgroups().remove(subgroup);
+        user.getFavSubgroups().remove( subgroupRepository.getReferenceById(subgroupId));
         userRepository.save(user);
     }
 

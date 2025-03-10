@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StudentsPagedListDto {
     @NotNull
-    Pagination pagination;
+    PaginationDto paginationDto;
 
     @NotNull
     List<StudentDto> students;

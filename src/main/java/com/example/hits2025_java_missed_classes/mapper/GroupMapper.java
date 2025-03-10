@@ -20,6 +20,9 @@ public class GroupMapper {
     }
 
     public Group toModel(GroupDto groupDto) {
-        return new Group();
+        Group group = new Group();
+        group.setName(groupDto.getName());
+        group.setSubgroups(groupDto.getSubgroups().stream().map(g -> subgroupMapper.toModel(g)).collect(Collectors.toList()));
+        return group;
     }
 }

@@ -13,8 +13,10 @@ import com.example.hits2025_java_missed_classes.repository.ToolsRepository;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -31,25 +33,32 @@ public class ToolsService {
 
     public void addStudentToGroup(UUID studentId, String groupName) {
         User user = userRepository.getReferenceById(studentId);
-        user.setGroupName(groupName);
+        user.setGroup(toolsRepository.getReferenceByName(groupName));
         userRepository.save(user);
     }
 
-    public void addStudentToSubgroup(UUID studentId, UUID subgroupId) {
+    public void addStudentToSubgroup(UUID studentId, UUID subgroupId, String groupName) {
         User user = userRepository.getReferenceById(studentId);
-        Subgroup subgroup = subgroupRepository.getReferenceById(subgroupId);
-        user.getSubgroup().add(subgroup);
-        userRepository.save(user);
+        if (Objects.equals(user.getGroup().getName(), groupName)) {
+            Subgroup subgroup = subgroupRepository.getReferenceById(subgroupId);
+            user.getSubgroup().add(subgroup);
+            userRepository.save(user);
+        }
     }
 
     public void addGroup(Group group) {
+        group.getSubgroups().forEach(subgroup -> {
+            subgroup.setGroup(group);
+        });
         toolsRepository.save(group);
     }
 
-    public void addSubgroup(Subgroup subgroup) {
+    public void addSubgroup(Subgroup subgroup, String groupName) {
+        subgroup.setGroup(toolsRepository.findByName(groupName));
         subgroupRepository.save(subgroup);
     }
 
+    @Transactional
     public void deleteGroupByName(String name) {
         toolsRepository.deleteByName(name);
     }
@@ -60,7 +69,8 @@ public class ToolsService {
 
     public void deleteStudentFromGroup(UUID userId) {
         User user = userRepository.getReferenceById(userId);
-        user.setGroupName(null);
+        user.setGroup(null);
+        user.setSubgroup(null);
         userRepository.save(user);
     }
 

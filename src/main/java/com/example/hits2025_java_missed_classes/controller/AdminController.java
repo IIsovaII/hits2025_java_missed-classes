@@ -5,13 +5,16 @@ import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
 @Tag(name = "Admin")
+@Validated
 public class AdminController {
     private final UserService userService;
 
@@ -22,7 +25,7 @@ public class AdminController {
     @Operation(summary = "add dean worker")
     @PostMapping("/deansWorker/add")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Boolean> setAsDeanWorker(@RequestBody UserAssignToRoleModelDto request) {
+    public ResponseEntity<Boolean> setAsDeanWorker(@RequestBody @Valid UserAssignToRoleModelDto request) {
         return ResponseEntity.ok(
                 userService.addRoleById(request.getUserId(), Role.ROLE_DEAN_WORKER)
         );
@@ -31,7 +34,7 @@ public class AdminController {
     @Operation(summary = "delete dean worker")
     @DeleteMapping("/deansWorker/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Boolean> removeFromDeanWorkers(@RequestBody UserAssignToRoleModelDto request) {
+    public ResponseEntity<Boolean> removeFromDeanWorkers(@RequestBody @Valid UserAssignToRoleModelDto request) {
         return ResponseEntity.ok(
                 userService.deleteRoleById(request.getUserId(), Role.ROLE_DEAN_WORKER)
         );
