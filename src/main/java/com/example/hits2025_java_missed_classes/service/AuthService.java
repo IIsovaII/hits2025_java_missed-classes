@@ -3,6 +3,7 @@ package com.example.hits2025_java_missed_classes.service;
 import com.example.hits2025_java_missed_classes.dto.LoginRequestDto;
 import com.example.hits2025_java_missed_classes.dto.RegisterRequestDto;
 import com.example.hits2025_java_missed_classes.dto.TokenResponseDto;
+import com.example.hits2025_java_missed_classes.exception.bad_request.EntityAlreadyExistsException;
 import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
@@ -45,7 +46,7 @@ public class AuthService {
     @Transactional
     public TokenResponseDto registerUser(RegisterRequestDto registerRequest) {
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            throw new RuntimeException("User with this username already exists.");
+            throw new EntityAlreadyExistsException("User with this username already exists.");
         }
 
         User user = new User();

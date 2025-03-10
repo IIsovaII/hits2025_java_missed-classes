@@ -1,15 +1,32 @@
 package com.example.hits2025_java_missed_classes.exception;
 
-import org.springframework.http.HttpStatus;
+import com.example.hits2025_java_missed_classes.dto.ErrorResponseDto;
+import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.BadRequestException;
+import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.ForbiddenException;
+import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.InternalServerErrorException;
+import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.NotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-class GlobalExceptionHandler {
-    @ExceptionHandler(RequestDeniedException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    String employeeNotFoundHandler(RequestDeniedException ex) {
-        return ex.getMessage();
+public class GlobalExceptionHandler {
+    @ExceptionHandler(NotFoundException.class)
+    public ErrorResponseDto handleNotFoundException(NotFoundException ex) {
+        return new ErrorResponseDto(ex.getMessage());
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ErrorResponseDto handleBadRequestException(BadRequestException ex) {
+        return new ErrorResponseDto(ex.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ErrorResponseDto handleBadRequestException(ForbiddenException ex) {
+        return new ErrorResponseDto(ex.getMessage());
+    }
+
+    @ExceptionHandler(InternalServerErrorException.class)
+    public ErrorResponseDto handleInternalServerErrorException(InternalServerErrorException ex) {
+        return new ErrorResponseDto(ex.getMessage());
     }
 }

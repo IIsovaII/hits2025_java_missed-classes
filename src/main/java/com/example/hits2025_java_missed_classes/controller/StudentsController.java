@@ -44,7 +44,7 @@ public class StudentsController {
             @Schema(description = "filter by specific subgroups (by any of given prefixes)")
             @RequestParam(required = false) List<String> subgroups,
             @Schema(description = "filter by teacher's favorite groups (for teachers)")
-            @RequestParam(required = false) Boolean areFavoriteGroupsOnly,
+            @RequestParam(required = false, defaultValue = "false") boolean areFavoriteGroupsOnly,
             @Schema(description = "filter by student's surname")
             @RequestParam(required = false) String studentSurname,
             @RequestParam(required = false, defaultValue = "0") int pageIndex,
@@ -72,7 +72,7 @@ public class StudentsController {
             @Schema(description = "filter by specific subgroups (by any of given prefixes)")
             @RequestParam(required = false) List<String> subgroups,
             @Schema(description = "filter by teacher's favorite groups (for teachers)")
-            @RequestParam(required = false) Boolean areFavoriteGroupsOnly,
+            @RequestParam(required = false, defaultValue = "false") boolean areFavoriteGroupsOnly,
             @Schema(description = "filter by student's surname")
             @RequestParam(required = false) String studentSurname,
             @Schema(description = "filters requests with start date greater than this parameter")

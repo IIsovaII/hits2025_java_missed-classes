@@ -1,4 +1,4 @@
-package com.example.hits2025_java_missed_classes.exception;
+package com.example.hits2025_java_missed_classes.dto;
 
 import lombok.Data;
 
