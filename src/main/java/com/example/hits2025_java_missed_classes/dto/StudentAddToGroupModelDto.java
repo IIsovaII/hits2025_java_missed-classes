@@ -2,14 +2,16 @@ package com.example.hits2025_java_missed_classes.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
-public class AddSubgroupDto {
+import java.util.UUID;
+
+@Getter
+@Setter
+public class StudentAddToGroupModelDto {
     @NotNull
-    SubgroupDto subgroup;
+    private UUID userId;
     @NotBlank
-    String groupName;
+    private String groupName;
 }

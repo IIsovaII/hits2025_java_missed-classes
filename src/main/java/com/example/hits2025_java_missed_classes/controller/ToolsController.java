@@ -1,9 +1,9 @@
 package com.example.hits2025_java_missed_classes.controller;
 
-import com.example.hits2025_java_missed_classes.dto.AddSubgroupDto;
+import com.example.hits2025_java_missed_classes.dto.SubgroupCreateModelDto;
 import com.example.hits2025_java_missed_classes.dto.GroupDto;
-import com.example.hits2025_java_missed_classes.dto.StudentAddRequestGroupDto;
-import com.example.hits2025_java_missed_classes.dto.StudentAddRequestSubgroupDto;
+import com.example.hits2025_java_missed_classes.dto.StudentAddToGroupModelDto;
+import com.example.hits2025_java_missed_classes.dto.StudentAddToSubgroupModelDto;
 import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
 import com.example.hits2025_java_missed_classes.mapper.SubgroupMapper;
 import com.example.hits2025_java_missed_classes.model.Role;
@@ -38,28 +38,28 @@ public class ToolsController {
 
     @PostMapping("/student/add/group")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
-    public ResponseEntity<?> addStudentGroup(@RequestBody @Valid StudentAddRequestGroupDto studentAddRequest) {
+    public ResponseEntity<?> addStudentGroup(@RequestBody @Valid StudentAddToGroupModelDto studentAddRequest) {
         toolsService.addStudentToGroup(studentAddRequest.getUserId(), studentAddRequest.getGroupName());
         return null;
     }
 
     @PostMapping("/student/add/subgroup")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
-    public ResponseEntity<?> addStudentSubgroup(@RequestBody @Valid StudentAddRequestSubgroupDto studentAddRequestSubgroupDto) {
-        toolsService.addStudentToSubgroup(studentAddRequestSubgroupDto.getUserId(), studentAddRequestSubgroupDto.getSubgroupId(), studentAddRequestSubgroupDto.getGroupName());
+    public ResponseEntity<?> addStudentSubgroup(@RequestBody @Valid StudentAddToSubgroupModelDto studentAddToSubgroupModelDto) {
+        toolsService.addStudentToSubgroup(studentAddToSubgroupModelDto.getUserId(), studentAddToSubgroupModelDto.getSubgroupId(), studentAddToSubgroupModelDto.getGroupName());
         return null;
     }
 
     @DeleteMapping("/student/delete/group")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
-    public void deleteStudentFromGroup(@RequestBody @Valid StudentAddRequestGroupDto studentAddRequestGroupDto) {
-        toolsService.deleteStudentFromGroup(studentAddRequestGroupDto.getUserId());
+    public void deleteStudentFromGroup(@RequestBody @Valid StudentAddToGroupModelDto studentAddToGroupModelDto) {
+        toolsService.deleteStudentFromGroup(studentAddToGroupModelDto.getUserId());
     }
 
     @DeleteMapping("/student/delete/subgroup")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
-    public void deleteStudentFromSubgroup(@RequestBody @Valid StudentAddRequestSubgroupDto studentAddRequestSubgroupDto) {
-        toolsService.deleteStudentFromSubgroup(studentAddRequestSubgroupDto.getUserId(), studentAddRequestSubgroupDto.getSubgroupId());
+    public void deleteStudentFromSubgroup(@RequestBody @Valid StudentAddToSubgroupModelDto studentAddToSubgroupModelDto) {
+        toolsService.deleteStudentFromSubgroup(studentAddToSubgroupModelDto.getUserId(), studentAddToSubgroupModelDto.getSubgroupId());
     }
 
     @PostMapping("/group/add")
@@ -70,8 +70,8 @@ public class ToolsController {
 
     @PostMapping("/subgroup/add")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
-    public void addGroup(@RequestBody @Valid AddSubgroupDto addSubgroupDto) {
-        toolsService.addSubgroup(subgroupMapper.toModel(addSubgroupDto.getSubgroup()),addSubgroupDto.getGroupName());
+    public void addGroup(@RequestBody @Valid SubgroupCreateModelDto subgroupCreateModelDto) {
+        toolsService.addSubgroup(subgroupMapper.toModel(subgroupCreateModelDto.getSubgroup()), subgroupCreateModelDto.getGroupName());
     }
 
     @DeleteMapping("/group/{groupName}/delete")

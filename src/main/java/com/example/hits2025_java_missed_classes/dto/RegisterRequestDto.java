@@ -9,10 +9,10 @@ import lombok.Data;
 @Data
 public class RegisterRequestDto {
     @NotNull
-    private String username;
+    private String name;
 
     @NotBlank
-    @Email(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")
+    @Email
     private String email;
 
     @NotNull
@@ -21,6 +21,6 @@ public class RegisterRequestDto {
     private String patronymic;
 
     @NotNull
-    @Size(min =  5, max = 64)
+    @Size(min =  5, max = 63)
     private String password;
 }
