@@ -21,5 +21,5 @@ public class MissRequestCreateModelDto {
     private MissRequestType type;
 
     @NotNull
-    private List<ConfirmationFileDto> confirmationFiles;
+    private List<ConfirmationFileCreateModelDto> confirmationFiles;
 }

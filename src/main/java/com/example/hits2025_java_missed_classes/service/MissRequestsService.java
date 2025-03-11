@@ -74,6 +74,7 @@ public class MissRequestsService {
                 .orElseThrow(() -> new EntityNotFoundException("Miss request not found with id: " + id));
 
         if (newEndDate.isBefore(missRequest.getEndDate())) {
+            //TODO throw different exception
             throw new IllegalArgumentException("New endDate cannot be lesser than old endDate");
         }
 
@@ -103,6 +104,7 @@ public class MissRequestsService {
             LocalDateTime endDate,
             Pageable pageable) {
 
+        //TODO throw different exception
         if (endDate != null && startDate != null &&
                 endDate.isBefore(startDate)) {
             throw new IllegalArgumentException("EndDate cannot be before startDate");

@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MissRequestCreateModelMapper {
-    final ConfirmationFileMapper confirmationFileMapper;
+    final ConfirmationFileCreateModelMapper confirmationFileMapper;
 
-    public MissRequestCreateModelMapper(ConfirmationFileMapper confirmationFileMapper) {
+    public MissRequestCreateModelMapper(ConfirmationFileCreateModelMapper confirmationFileMapper) {
         this.confirmationFileMapper = confirmationFileMapper;
     }
 
