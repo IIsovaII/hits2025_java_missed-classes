@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -18,12 +18,10 @@ public class ConfirmationFile {
     private UUID id;
 
     @NotBlank
-    @Max(value = 256)
-    @Column(length = 256)
     private String name;
 
     @Column(updatable = false)
-    private LocalDateTime attachDate;
+    private LocalDate attachDate;
 
     @Lob
     @NotBlank
@@ -38,6 +36,6 @@ public class ConfirmationFile {
 
     @PrePersist
     protected void onCreate() {
-        attachDate = LocalDateTime.now();
+        attachDate = LocalDate.now();
     }
 }

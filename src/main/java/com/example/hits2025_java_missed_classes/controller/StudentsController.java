@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -76,9 +76,9 @@ public class StudentsController {
             @Schema(description = "filter by student's surname")
             @RequestParam(required = false) String studentSurname,
             @Schema(description = "filters requests with start date greater than this parameter")
-            @RequestParam(required = false) LocalDateTime startDate,
+            @RequestParam(required = false) LocalDate startDate,
             @Schema(description = "filters requests with end date lesser than this parameter")
-            @RequestParam(required = false) LocalDateTime endDate,
+            @RequestParam(required = false) LocalDate endDate,
             @RequestParam(required = false, defaultValue = "0") int pageIndex,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 

@@ -12,5 +12,5 @@ public class GantResponseDto {
     @NotNull
     List<GantGroupItemDto> groups;
     @NotNull
-    PaginationDto paginationDto;
+    PaginationDto pagination;
 }

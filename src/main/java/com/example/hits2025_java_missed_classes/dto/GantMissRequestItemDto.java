@@ -5,15 +5,15 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 public class GantMissRequestItemDto {
     @NotNull
-    LocalDateTime startDate;
+    LocalDate startDate;
     @NotNull
-    LocalDateTime endDate;
+    LocalDate endDate;
     @NotNull
     MissRequestType type;
 }

@@ -1,17 +1,16 @@
 package com.example.hits2025_java_missed_classes.controller;
 
 import com.example.hits2025_java_missed_classes.dto.*;
-import com.example.hits2025_java_missed_classes.mapper.ConfirmationFileCreateModelMapper;
-import com.example.hits2025_java_missed_classes.mapper.MissRequestCreateModelMapper;
-import com.example.hits2025_java_missed_classes.mapper.MissRequestEditModelMapper;
-import com.example.hits2025_java_missed_classes.mapper.MissRequestPagedListMapper;
+import com.example.hits2025_java_missed_classes.mapper.*;
 import com.example.hits2025_java_missed_classes.model.ArchiveModel;
 import com.example.hits2025_java_missed_classes.repository.ConfirmationFileRepository;
 import com.example.hits2025_java_missed_classes.service.ConfirmationFileService;
 import com.example.hits2025_java_missed_classes.service.MissRequestsService;
+import com.example.hits2025_java_missed_classes.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -38,14 +38,18 @@ public class MissRequestsController {
     private final MissRequestEditModelMapper missRequestEditModelMapper;
     private final ConfirmationFileCreateModelMapper confirmationFileMapper;
     private final ConfirmationFileService confirmationFileService;
+    private final GantMapper gantMapper;
+    private final StudentService studentService;
 
-    public MissRequestsController(MissRequestsService missRequestsService, MissRequestPagedListMapper missRequestPagedListMapper, MissRequestEditModelMapper missRequestEditModelMapper, ConfirmationFileCreateModelMapper confirmationFileMapper, MissRequestCreateModelMapper missRequestCreateModelMapper, ConfirmationFileRepository confirmationFileRepository, ConfirmationFileService confirmationFileService) {
+    public MissRequestsController(MissRequestsService missRequestsService, MissRequestPagedListMapper missRequestPagedListMapper, MissRequestEditModelMapper missRequestEditModelMapper, ConfirmationFileCreateModelMapper confirmationFileMapper, MissRequestCreateModelMapper missRequestCreateModelMapper, ConfirmationFileRepository confirmationFileRepository, ConfirmationFileService confirmationFileService, GantMapper gantMapper, StudentService studentService) {
         this.missRequestsService = missRequestsService;
         this.missRequestPagedListMapper = missRequestPagedListMapper;
         this.missRequestEditModelMapper = missRequestEditModelMapper;
         this.confirmationFileMapper = confirmationFileMapper;
         this.missRequestCreateModelMapper = missRequestCreateModelMapper;
         this.confirmationFileService = confirmationFileService;
+        this.gantMapper = gantMapper;
+        this.studentService = studentService;
     }
 
     @Operation(summary = "Get all requests (for teachers and dean workers)", description = "Get paged list of filtered requests, ASC sorted by endDate")
@@ -59,9 +63,9 @@ public class MissRequestsController {
             @Schema(description = "filter by student's surname")
             @RequestParam(required = false) String studentSurname,
             @Schema(description = "filters requests with start date greater than this parameter")
-            @RequestParam(required = false) LocalDateTime startDate,
+            @RequestParam(required = false) LocalDate startDate,
             @Schema(description = "filters requests with end date lesser than this parameter")
-            @RequestParam(required = false) LocalDateTime endDate,
+            @RequestParam(required = false) LocalDate endDate,
             @RequestParam(required = false, defaultValue = "0") int pageIndex,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
@@ -82,21 +86,21 @@ public class MissRequestsController {
     @Operation(summary = "Create new request (for students)")
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public UUID createMissRequest(@RequestBody MissRequestCreateModelDto model) {
+    public UUID createMissRequest(@Valid @RequestBody MissRequestCreateModelDto model) {
         return missRequestsService.add(missRequestCreateModelMapper.toDomain(model)).getId();
     }
 
     @Operation(summary = "Edit request (for dean workers)")
     @PutMapping("{id}/edit")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
-    public UUID editMissRequest(@PathVariable UUID id, @RequestBody MissRequestEditModelDto model) {
+    public UUID editMissRequest(@PathVariable UUID id, @Valid @RequestBody MissRequestEditModelDto model) {
         return missRequestsService.edit(id, missRequestEditModelMapper.toDomain(model)).getId();
     }
 
     @Operation(summary = "Prolong existing request (for students)", description = "If request status is DENIED, than it does nothing, otherwise it prolongs request and also sets status to IN_QUEUE")
     @PutMapping("{id}/prolong")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public UUID prolongMissRequest(@PathVariable UUID id, @RequestBody MissRequestProlongModelDto model) {
+    public UUID prolongMissRequest(@PathVariable UUID id, @Valid @RequestBody MissRequestProlongModelDto model) {
         return missRequestsService.prolong(id, model.getNewEndDate()).getId();
     }
 
@@ -147,6 +151,47 @@ public class MissRequestsController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + archive.getName())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(archive.getData().length)
+                .body(resource);
+    }
+
+    @Operation(summary = "Export students misses in csv format (for teachers)")
+    @GetMapping("export/csv")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public ResponseEntity<ByteArrayResource> exportMissesTable(
+            @Schema(description = "filter by specific group (by given prefix)")
+            @RequestParam(required = false) String group,
+            @Schema(description = "filter by specific subgroups (by any of given prefixes)")
+            @RequestParam(required = false) List<String> subgroups,
+            @Schema(description = "filter by teacher's favorite groups (for teachers)")
+            @RequestParam(required = false, defaultValue = "false") boolean areFavoriteGroupsOnly,
+            @Schema(description = "filter by student's surname")
+            @RequestParam(required = false) String studentSurname,
+            @Schema(description = "filters requests with start date greater than this parameter")
+            @RequestParam(required = false) LocalDate startDate,
+            @Schema(description = "filters requests with end date lesser than this parameter")
+            @RequestParam(required = false) LocalDate endDate,
+            @RequestParam(required = false, defaultValue = "0") int pageIndex,
+            @RequestParam(required = false, defaultValue = "10") int pageSize) {
+
+        var sortBy = Sort.by(Sort.Direction.ASC, "groupName");
+        Pageable pageable = PageRequest.of(pageIndex, pageSize, sortBy);
+
+        GantResponseDto gantResponse = gantMapper.toDto(
+                studentService.getPagedStudentsFiltered(
+                        group,
+                        subgroups,
+                        areFavoriteGroupsOnly,
+                        studentSurname,
+                        startDate,
+                        endDate,
+                        pageable)
+        );
+
+        byte[] csvBytes = missRequestsService.generateMissesCsv(gantResponse);
+        ByteArrayResource resource = new ByteArrayResource(csvBytes);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "Отчетность" + LocalDateTime.now() + ".csv")
+                .contentType(MediaType.parseMediaType("text/csv"))
                 .body(resource);
     }
 }

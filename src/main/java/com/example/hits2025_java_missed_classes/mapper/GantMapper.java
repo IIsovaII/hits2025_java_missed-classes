@@ -10,8 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 public class GantMapper {
@@ -60,7 +62,9 @@ public class GantMapper {
                     currentUser.getSurname(),
                     currentUser.getName(),
                     currentUser.getPatronymic(),
-                    toGantDto(currentUser.getCreatedMissRequests()) // TODO might be optimized by not fetching whole entity
+                    toGantDto(currentUser.getCreatedMissRequests().stream()
+                            .sorted(Comparator.comparing(MissRequest::getStartDate))
+                            .collect(Collectors.toList())) // TODO might be optimized by not fetching whole entity
             );
             currentGantGroupItem.getStudents().add(newGantStudentItem);
         }

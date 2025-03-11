@@ -12,4 +12,11 @@ public class MissRequestTypeMapper {
             case EVENT_TRIP -> "поездка_на_мероприятие";
         };
     }
+    public char toRuCharacter(MissRequestType type) {
+        return switch (type){
+            case FAMILY -> 'С';
+            case SICK -> 'Б';
+            case EVENT_TRIP -> 'П';
+        };
+    }
 }

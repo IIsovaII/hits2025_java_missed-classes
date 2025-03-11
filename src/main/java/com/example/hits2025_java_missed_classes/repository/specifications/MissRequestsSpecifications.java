@@ -7,7 +7,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,22 +41,22 @@ public class MissRequestsSpecifications {
         };
     }
 
-    public static Specification<MissRequest> hasStartDateGreaterThan(LocalDateTime startDate) {
+    public static Specification<MissRequest> hasStartDateGreaterThan(LocalDate startDate) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.greaterThan(root.get("startDate"), startDate);
     }
 
-    public static Specification<MissRequest> hasEndDateLesserThan(LocalDateTime endDate) {
+    public static Specification<MissRequest> hasEndDateLesserThan(LocalDate endDate) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.lessThan(root.get("endDate"), endDate);
     }
 
-    public static Specification<MissRequest> hasEndDateGreaterThanOrEqualTo(LocalDateTime startDate) {
+    public static Specification<MissRequest> hasEndDateGreaterThanOrEqualTo(LocalDate startDate) {
         return (root, query, criteriaBuilder) ->
             criteriaBuilder.greaterThanOrEqualTo(root.get("endDate"), startDate);
     }
 
-    public static Specification<MissRequest> hasStartDateLesserThanOrEqualTo(LocalDateTime endDate) {
+    public static Specification<MissRequest> hasStartDateLesserThanOrEqualTo(LocalDate endDate) {
         return (root, query, criteriaBuilder) ->
             criteriaBuilder.lessThanOrEqualTo(root.get("startDate"), endDate);
     }

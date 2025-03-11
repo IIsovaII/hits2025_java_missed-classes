@@ -1,17 +1,30 @@
 package com.example.hits2025_java_missed_classes.service;
 
+import com.example.hits2025_java_missed_classes.dto.GantGroupItemDto;
+import com.example.hits2025_java_missed_classes.dto.GantMissRequestItemDto;
+import com.example.hits2025_java_missed_classes.dto.GantResponseDto;
+import com.example.hits2025_java_missed_classes.dto.GantStudentItemDto;
 import com.example.hits2025_java_missed_classes.exception.forbidden.RequestDeniedException;
+import com.example.hits2025_java_missed_classes.mapper.MissRequestTypeMapper;
 import com.example.hits2025_java_missed_classes.model.*;
 import com.example.hits2025_java_missed_classes.repository.ConfirmationFileRepository;
 import com.example.hits2025_java_missed_classes.repository.MissRequestsRepository;
 import com.example.hits2025_java_missed_classes.repository.specifications.MissRequestsSpecifications;
+import com.opencsv.CSVWriter;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,11 +33,13 @@ public class MissRequestsService {
     final MissRequestsRepository repository;
     final ConfirmationFileRepository confirmationFileRepository;
     private final UserService userService;
+    private final MissRequestTypeMapper missRequestTypeMapper;
 
-    public MissRequestsService(MissRequestsRepository repository, UserService userService, ConfirmationFileRepository confirmationFileRepository) {
+    public MissRequestsService(MissRequestsRepository repository, UserService userService, ConfirmationFileRepository confirmationFileRepository, MissRequestTypeMapper missRequestTypeMapper) {
         this.repository = repository;
         this.confirmationFileRepository = confirmationFileRepository;
         this.userService = userService;
+        this.missRequestTypeMapper = missRequestTypeMapper;
     }
 
     public MissRequest add(MissRequest missRequest) {
@@ -69,7 +84,7 @@ public class MissRequestsService {
         return repository.save(missRequest);
     }
 
-    public MissRequest prolong(UUID id, LocalDateTime newEndDate) {
+    public MissRequest prolong(UUID id, LocalDate newEndDate) {
         MissRequest missRequest = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Miss request not found with id: " + id));
 
@@ -100,8 +115,8 @@ public class MissRequestsService {
             String groupName,
             List<String> subgroups,
             String studentSurname,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
+            LocalDate startDate,
+            LocalDate endDate,
             Pageable pageable) {
 
         //TODO throw different exception
@@ -129,5 +144,68 @@ public class MissRequestsService {
         }
 
         return repository.findAll(specification, pageable);
+    }
+
+    //TODO убейте меня за этот код и того, кто придумал экспортировать csv
+    public byte[] generateMissesCsv(GantResponseDto gantResponse){
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+        CSVWriter csvWriter = new CSVWriter(writer);
+
+        LocalDate startDate = gantResponse
+                .getGroups().getFirst()
+                .getStudents().getFirst()
+                .getRequests().getFirst()
+                .getStartDate();
+        LocalDate endDate = gantResponse
+                .getGroups().getFirst()
+                .getStudents().getFirst()
+                .getRequests().getLast()
+                .getEndDate();
+
+        for (GantGroupItemDto group: gantResponse.getGroups()){
+            for (GantStudentItemDto student: group.getStudents()){
+                LocalDate studentFirstMissDate = student.getRequests().getFirst().getStartDate();
+                LocalDate studentLastMissDate = student.getRequests().getLast().getEndDate();
+
+                if (startDate.isAfter(studentFirstMissDate))
+                    startDate = studentFirstMissDate;
+
+                if (endDate.isBefore(studentFirstMissDate))
+                    endDate = studentLastMissDate;
+            }
+        }
+
+        int totalDays = (int)ChronoUnit.DAYS.between(endDate, startDate);
+
+        for (GantGroupItemDto group: gantResponse.getGroups()) {
+            csvWriter.writeNext(new String[]{group.getGroupName()});
+
+            for (GantStudentItemDto student : group.getStudents()) {
+                var nextLine = new String[totalDays + 1];
+                Arrays.fill(nextLine, "");
+                nextLine[0] = student.getName();
+
+                for (GantMissRequestItemDto request: student.getRequests()) {
+                    int startDiff = (int)ChronoUnit.DAYS.between(startDate, request.getStartDate());
+                    int endDiff = (int)ChronoUnit.DAYS.between(startDate, request.getEndDate());
+                    char typeChar = missRequestTypeMapper.toRuCharacter(request.getType());
+
+                    for (int i = startDiff; i < endDiff; i++) {
+                        nextLine[i] = String.valueOf(typeChar);
+                    }
+                }
+
+                csvWriter.writeNext(nextLine);
+            }
+        }
+
+        try {
+            csvWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return outputStream.toByteArray();
     }
 }

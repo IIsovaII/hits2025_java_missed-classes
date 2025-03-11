@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -27,8 +27,8 @@ public class StudentService {
             List<String> subgroups,
             Boolean areFavoriteGroupsOnly,
             String studentSurname,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
+            LocalDate startDate,
+            LocalDate endDate,
             Pageable pageable) {
 
         User currentUser = userService.getCurrentUser();

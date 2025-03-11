@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -16,5 +16,5 @@ public class ConfirmationFileDto {
     private String name;
 
     @NotNull
-    private LocalDateTime attachDate;
+    private LocalDate attachDate;
 }

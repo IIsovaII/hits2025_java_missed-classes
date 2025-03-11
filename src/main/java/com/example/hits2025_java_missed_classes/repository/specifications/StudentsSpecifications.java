@@ -5,7 +5,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +40,7 @@ public class StudentsSpecifications {
         return isInAnyOfSubgroupsByName(teacher.getFavSubgroups().stream().map(Subgroup::getName).collect(Collectors.toList()));
     }
 
-    public static Specification<User> hasMissRequestsInSegment(LocalDateTime startDate, LocalDateTime endDate) {
+    public static Specification<User> hasMissRequestsInSegment(LocalDate startDate, LocalDate endDate) {
         return (root, query, criteriaBuilder) -> {
             Join<User, MissRequest> missRequestJoin = root.join("createdMissRequests");
             return criteriaBuilder.and(
@@ -50,14 +50,14 @@ public class StudentsSpecifications {
         };
     }
 
-    public static Specification<User> hasEndDateGreaterThanOrEqualTo(LocalDateTime startDate) {
+    public static Specification<User> hasEndDateGreaterThanOrEqualTo(LocalDate startDate) {
         return (root, query, criteriaBuilder) -> {
             Join<User, MissRequest> missRequestJoin = root.join("createdMissRequests");
             return criteriaBuilder.greaterThanOrEqualTo(missRequestJoin.get("endDate"), startDate);
         };
     }
 
-    public static Specification<User> hasStartDateLesserThanOrEqualTo(LocalDateTime endDate) {
+    public static Specification<User> hasStartDateLesserThanOrEqualTo(LocalDate endDate) {
         return (root, query, criteriaBuilder) -> {
             Join<User, MissRequest> missRequestJoin = root.join("createdMissRequests");
             return criteriaBuilder.lessThanOrEqualTo(missRequestJoin.get("startDate"), endDate);
