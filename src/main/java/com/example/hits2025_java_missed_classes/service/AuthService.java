@@ -50,7 +50,7 @@ public class AuthService {
         }
 
         User user = new User();
-        user.setName(registerRequest.getUsername());
+        user.setName(registerRequest.getName());
         user.setEmail(registerRequest.getEmail());
         user.setSurname(registerRequest.getSurname());
         user.setPatronymic(registerRequest.getPatronymic());
