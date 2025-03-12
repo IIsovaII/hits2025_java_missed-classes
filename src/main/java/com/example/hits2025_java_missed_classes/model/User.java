@@ -44,10 +44,10 @@ public class User {
     private List<Subgroup> subgroup;
 
     @ManyToMany
-    private List<Group> favGroups;
+    private List<Group> favoriteGroups;
 
     @ManyToMany
-    private List<Subgroup> favSubgroups;
+    private List<Subgroup> favoriteSubgroups;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)

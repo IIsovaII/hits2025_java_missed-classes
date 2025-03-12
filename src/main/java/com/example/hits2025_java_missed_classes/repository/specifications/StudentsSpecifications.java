@@ -37,7 +37,7 @@ public class StudentsSpecifications {
     }
 
     public static Specification<User> isInTeacherFavorites(User teacher) {
-        return isInAnyOfSubgroupsByName(teacher.getFavSubgroups().stream().map(Subgroup::getName).collect(Collectors.toList()));
+        return isInAnyOfSubgroupsByName(teacher.getFavoriteSubgroups().stream().map(Subgroup::getName).collect(Collectors.toList()));
     }
 
     public static Specification<User> hasMissRequestsInSegment(LocalDate startDate, LocalDate endDate) {
