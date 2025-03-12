@@ -10,9 +10,11 @@ import java.util.stream.Collectors;
 @Component
 public class MissRequestMapper {
     public final ConfirmationFileMapper confirmationFileMapper;
+    private final StudentMapper studentMapper;
 
-    public MissRequestMapper(ConfirmationFileMapper confirmationFileMapper) {
+    public MissRequestMapper(ConfirmationFileMapper confirmationFileMapper, StudentMapper studentMapper) {
         this.confirmationFileMapper = confirmationFileMapper;
+        this.studentMapper = studentMapper;
     }
 
     @Transactional
@@ -23,6 +25,7 @@ public class MissRequestMapper {
                 model.getEndDate(),
                 model.getType(),
                 model.getStatus(),
+                studentMapper.toDto(model.getCreator()),
                 model.getConfirmationFiles()
                         .stream()
                         .map(confirmationFileMapper::toDto)

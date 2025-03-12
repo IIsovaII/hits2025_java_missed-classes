@@ -27,5 +27,8 @@ public class MissRequestDto {
     @NotNull
     private MissRequestStatus missRequestStatus;
 
+    @NotNull
+    private StudentDto creator;
+
     private List<ConfirmationFileDto> confirmationFiles;
 }
