@@ -30,5 +30,8 @@ public class MissRequestDto {
     @NotNull
     private StudentDto creator;
 
+    @NotNull
+    private MissRequestStatus status;
+
     private List<ConfirmationFileDto> confirmationFiles;
 }

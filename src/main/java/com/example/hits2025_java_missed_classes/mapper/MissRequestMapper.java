@@ -26,6 +26,7 @@ public class MissRequestMapper {
                 model.getType(),
                 model.getStatus(),
                 studentMapper.toDto(model.getCreator()),
+                model.getStatus(),
                 model.getConfirmationFiles()
                         .stream()
                         .map(confirmationFileMapper::toDto)
