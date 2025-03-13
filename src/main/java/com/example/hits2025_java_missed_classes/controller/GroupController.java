@@ -1,6 +1,7 @@
 
 package com.example.hits2025_java_missed_classes.controller;
 
+import com.example.hits2025_java_missed_classes.dto.GetSubGroupDto;
 import com.example.hits2025_java_missed_classes.dto.GroupDto;
 import com.example.hits2025_java_missed_classes.dto.SubgroupDto;
 import com.example.hits2025_java_missed_classes.model.User;
@@ -71,6 +72,12 @@ public class GroupController {
         User user = userService.getCurrentUser();
         return groupService.getFavGroups(user.getId());
     }
+
+    @GetMapping("/subgroupIdGet")
+    public UUID getSubgroupGet(@RequestParam GetSubGroupDto subGroupDto) {
+        return groupService.getSubgroup(subGroupDto);
+    }
+
 
     @GetMapping("/searchGroup")
     public List<GroupDto> getGroupsByName(@RequestParam String groupName) {
