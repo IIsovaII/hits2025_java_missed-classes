@@ -23,10 +23,7 @@ public class MissRequestDto {
     private LocalDate endDate;
 
     @NotNull
-    private MissRequestType missRequestType;
-
-    @NotNull
-    private MissRequestStatus missRequestStatus;
+    private MissRequestType type;
 
     @NotNull
     private StudentDto creator;

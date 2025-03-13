@@ -72,7 +72,7 @@ public class MissRequestsService {
         missRequest.setEndDate(editModel.getEndDate());
         missRequest.setType(editModel.getType());
         missRequest.setStatusSetBy(userService.getCurrentUser());
-        missRequest.setStatus(missRequest.getStatus());
+        missRequest.setStatus(editModel.getStatus());
 
         return repository.save(missRequest);
     }

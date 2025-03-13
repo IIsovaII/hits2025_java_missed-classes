@@ -9,10 +9,13 @@ import com.example.hits2025_java_missed_classes.model.ArchiveModel;
 import com.example.hits2025_java_missed_classes.repository.ConfirmationFileRepository;
 import com.example.hits2025_java_missed_classes.repository.MissRequestsRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.Transient;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 import java.nio.file.*;
 import java.util.zip.ZipEntry;
@@ -40,6 +43,7 @@ public class ConfirmationFileService {
         return new ArchiveModel(archiveData, generateRequestDirectoryName(confirmationFile.getMissRequest()));
     }
 
+    @Transactional
     public ArchiveModel exportArchivedAttachmentsByRequestsIds(List<UUID> ids) {
         Map<String, byte[]> fileHierarchy = new HashMap<>();
 
@@ -54,7 +58,7 @@ public class ConfirmationFileService {
         }
 
         byte[] archiveData = createArchive(fileHierarchy);
-        return new ArchiveModel(archiveData, "Сводка на " + new Date());
+        return new ArchiveModel(archiveData, "Сводка на " + LocalDate.now());
     }
 
     private String generateRequestDirectoryName(MissRequest request) {
@@ -66,7 +70,7 @@ public class ConfirmationFileService {
                 missRequestTypeMapper.toRuString(request.getType()) +
                 '_' +
                 request.getStartDate() +
-                '-' +
+                '_' +
                 request.getEndDate();
     }
 

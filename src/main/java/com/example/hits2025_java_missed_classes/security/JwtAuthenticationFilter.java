@@ -1,19 +1,23 @@
 package com.example.hits2025_java_missed_classes.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerMapping;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -57,7 +61,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             catch (ExpiredJwtException e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is expired");
             }
+            catch (JwtException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token exception");
+            }
         }
+        /*
+        else if (!Objects.equals(request.getRequestURI(), "/account/login")
+        && !Objects.equals(request.getRequestURI(), "/account/register")) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,("Invalid token"));
+        }*/
 
         filterChain.doFilter(request, response);
     }

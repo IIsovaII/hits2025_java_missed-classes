@@ -1,6 +1,7 @@
 package com.example.hits2025_java_missed_classes.controller;
 
 import com.example.hits2025_java_missed_classes.dto.*;
+import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.UnauthorizedException;
 import com.example.hits2025_java_missed_classes.mapper.UserMapper;
 import com.example.hits2025_java_missed_classes.security.JwtBlacklistService;
 import com.example.hits2025_java_missed_classes.security.JwtUtil;
@@ -57,16 +58,15 @@ public class UserController {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
 
-            // TODO: тут проверить что токен вообще валидный, чтобы не было 500 ошибки
             if (!jwtBlacklistService.isBlacklisted(token)) {
                 long expirationTime = jwtUtil.getExpirationTimeFromToken(token);
                 jwtBlacklistService.addToBlacklist(token, expirationTime);
                 return ResponseEntity.ok("Logged out successfully");
             } else {
-                return ResponseEntity.badRequest().body("Token is already blacklisted");
+                throw new UnauthorizedException("Token is already blacklisted");
             }
         }
 
-        return ResponseEntity.badRequest().body("Invalid token");
+        throw new UnauthorizedException("Invalid token");
     }
 }

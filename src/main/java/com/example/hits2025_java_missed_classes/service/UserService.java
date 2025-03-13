@@ -1,5 +1,6 @@
 package com.example.hits2025_java_missed_classes.service;
 
+import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.UnauthorizedException;
 import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
@@ -38,6 +39,6 @@ public class UserService {
         String email = authentication.getName();
         return userRepository
                 .findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Unable to find user with email: " + email));
+                .orElseThrow(() -> new UnauthorizedException("Unauthorized"));
     }
 }

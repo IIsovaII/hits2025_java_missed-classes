@@ -5,6 +5,7 @@ import com.example.hits2025_java_missed_classes.security.JwtAuthenticationFilter
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -43,29 +45,21 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-                //.authorizeHttpRequests(auth -> auth.requestMatchers("/account/login", "/account/register", "/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/h2-console/**")
-                //        .permitAll().anyRequest());//.authenticated());
 
-        // Добавляем JWT-фильтр перед стандартным фильтром аутентификации - будто здесь должно вылететь 401
+        /*
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/account/login", "/account/register", "/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/h2-console/**")
+                        .permitAll()
+                        .anyRequest().authenticated()
+        )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+        */
+
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
-    /*
-    //TODO for debug
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Allow all requests
-                );
-
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }*/
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

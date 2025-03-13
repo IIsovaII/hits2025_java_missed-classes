@@ -24,7 +24,6 @@ public class MissRequestMapper {
                 model.getStartDate(),
                 model.getEndDate(),
                 model.getType(),
-                model.getStatus(),
                 studentMapper.toDto(model.getCreator()),
                 model.getStatus(),
                 model.getConfirmationFiles()

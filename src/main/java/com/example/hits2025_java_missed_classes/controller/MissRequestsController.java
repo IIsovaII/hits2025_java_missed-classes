@@ -8,8 +8,10 @@ import com.example.hits2025_java_missed_classes.service.ConfirmationFileService;
 import com.example.hits2025_java_missed_classes.service.MissRequestsService;
 import com.example.hits2025_java_missed_classes.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -134,8 +138,13 @@ public class MissRequestsController {
     public ResponseEntity<ByteArrayResource> exportArchivedAttachmentById(@PathVariable UUID id) {
         ArchiveModel archive = confirmationFileService.exportArchivedAttachmentsById(id);
         ByteArrayResource resource = new ByteArrayResource(archive.getData());
+
+        String filename = archive.getName() + ".zip";
+        String encodedFilename = "filename*=UTF-8''" + URLEncoder.encode(filename, StandardCharsets.UTF_8)
+                .replace("+", "%20");
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + archive.getName() + ".zip")//todo hz pro zip i snizy toje
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + encodedFilename)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(archive.getData().length)
                 .body(resource);
@@ -144,11 +153,16 @@ public class MissRequestsController {
     @Operation(summary = "Export confirmation documents of the requests by theirs(requests) ids (for dean workers)")
     @GetMapping("confirmations/export")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
-    public ResponseEntity<ByteArrayResource> exportArchivedAttachmentsByRequestsIds(@RequestBody List<UUID> ids) {
+    public ResponseEntity<ByteArrayResource> exportArchivedAttachmentsByRequestsIds(@RequestParam List<UUID> ids, HttpServletResponse response) {
         ArchiveModel archive = confirmationFileService.exportArchivedAttachmentsByRequestsIds(ids);
         ByteArrayResource resource = new ByteArrayResource(archive.getData());
+
+        String filename = archive.getName() + ".zip";
+        String encodedFilename = "filename*=UTF-8''" + URLEncoder.encode(filename, StandardCharsets.UTF_8)
+                .replace("+", "%20");
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + archive.getName() + ".zip")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + encodedFilename)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(archive.getData().length)
                 .body(resource);
@@ -190,6 +204,7 @@ public class MissRequestsController {
 
         byte[] csvBytes = missRequestsService.generateMissesCsv(gantResponse);
         ByteArrayResource resource = new ByteArrayResource(csvBytes);
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "Отчетность" + LocalDateTime.now() + ".csv")
                 .contentType(MediaType.parseMediaType("text/csv"))
