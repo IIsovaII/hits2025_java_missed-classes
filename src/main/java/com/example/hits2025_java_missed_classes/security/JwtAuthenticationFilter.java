@@ -1,5 +1,6 @@
 package com.example.hits2025_java_missed_classes.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,17 +40,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
                 return;
             }
-            String username = jwtUtil.extractEmail(jwt);
+            try {
+                String username = jwtUtil.extractEmail(jwt);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
-                if (jwtUtil.validateToken(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    if (jwtUtil.validateToken(jwt, userDetails)) {
+                        UsernamePasswordAuthenticationToken authenticationToken =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    }
                 }
+            }
+            catch (ExpiredJwtException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is expired");
             }
         }
 

@@ -123,7 +123,7 @@ public class MissRequestsController {
     @PreAuthorize("hasAnyRole('ROLE_STUDENT', 'ROLE_DEAN_WORKER')")
     public UUID addConfirmation(
             @PathVariable UUID id,
-            @RequestBody List<ConfirmationFileCreateModelDto> model) {
+            @Valid @RequestBody List<ConfirmationFileCreateModelDto> model) {
         return missRequestsService.attachConfirmation(
                 id, model.stream().map(confirmationFileMapper::toDomain).toList()).getId();
     }
@@ -135,7 +135,7 @@ public class MissRequestsController {
         ArchiveModel archive = confirmationFileService.exportArchivedAttachmentsById(id);
         ByteArrayResource resource = new ByteArrayResource(archive.getData());
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + archive.getName())
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + archive.getName() + ".zip")//todo hz pro zip i snizy toje
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(archive.getData().length)
                 .body(resource);
@@ -148,7 +148,7 @@ public class MissRequestsController {
         ArchiveModel archive = confirmationFileService.exportArchivedAttachmentsByRequestsIds(ids);
         ByteArrayResource resource = new ByteArrayResource(archive.getData());
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + archive.getName())
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + archive.getName() + ".zip")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(archive.getData().length)
                 .body(resource);
@@ -184,7 +184,8 @@ public class MissRequestsController {
                         studentSurname,
                         startDate,
                         endDate,
-                        pageable)
+                        pageable),
+                startDate, endDate
         );
 
         byte[] csvBytes = missRequestsService.generateMissesCsv(gantResponse);

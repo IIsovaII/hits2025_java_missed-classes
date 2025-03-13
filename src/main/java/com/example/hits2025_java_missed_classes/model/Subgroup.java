@@ -1,6 +1,7 @@
 package com.example.hits2025_java_missed_classes.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -24,6 +25,6 @@ public class Subgroup {
     @ManyToMany
     private List<User> user;
 
-    @NonNull
+    @NotNull
     private String name;
 }

@@ -24,9 +24,9 @@ public class ConfirmationFile {
     private LocalDate attachDate;
 
     @Lob
-    @NotBlank
+    @NotNull
     //TODO hardcoded
-    @Max(value = 10 * 1024 * 1024, message = "File size must be less than 10 MB")
+    //@Max(value = 10 * 1024 * 1024, message = "File size must be less than 10 MB")
     private byte[] data;
 
     @NotNull

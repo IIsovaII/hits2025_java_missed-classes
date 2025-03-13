@@ -46,16 +46,8 @@ public class StudentService {
         if (studentSurname != null) {
             specification = specification.and(StudentsSpecifications.hasSurname(studentSurname));
         }
-        if (startDate != null && endDate != null) {
+        if (startDate != null || endDate != null) {
             specification = specification.and(StudentsSpecifications.hasMissRequestsInSegment(startDate, endDate));
-        }
-        else {
-            if (startDate != null) {
-                specification = specification.and(StudentsSpecifications.hasEndDateGreaterThanOrEqualTo(startDate));
-            }
-            if (endDate != null) {
-                specification = specification.and(StudentsSpecifications.hasStartDateLesserThanOrEqualTo(endDate));
-            }
         }
 
         return userRepository.findAll(specification, pageable);

@@ -4,6 +4,7 @@ import com.example.hits2025_java_missed_classes.dto.GantGroupItemDto;
 import com.example.hits2025_java_missed_classes.dto.GantMissRequestItemDto;
 import com.example.hits2025_java_missed_classes.dto.GantResponseDto;
 import com.example.hits2025_java_missed_classes.dto.GantStudentItemDto;
+import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.BadRequestException;
 import com.example.hits2025_java_missed_classes.exception.forbidden.RequestDeniedException;
 import com.example.hits2025_java_missed_classes.mapper.MissRequestTypeMapper;
 import com.example.hits2025_java_missed_classes.model.*;
@@ -12,6 +13,7 @@ import com.example.hits2025_java_missed_classes.repository.MissRequestsRepositor
 import com.example.hits2025_java_missed_classes.repository.specifications.MissRequestsSpecifications;
 import com.opencsv.CSVWriter;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -75,11 +77,13 @@ public class MissRequestsService {
         return repository.save(missRequest);
     }
 
+    @Transactional
     public MissRequest attachConfirmation(UUID id, List<ConfirmationFile> files) {
         MissRequest missRequest = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Miss request not found with id: " + id));
 
-        missRequest.getConfirmationFiles().addAll(files);
+        files.forEach(confirmationFile ->
+                confirmationFile.setMissRequest(missRequest));
 
         return repository.save(missRequest);
     }
@@ -122,7 +126,7 @@ public class MissRequestsService {
         //TODO throw different exception
         if (endDate != null && startDate != null &&
                 endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException("EndDate cannot be before startDate");
+            throw new BadRequestException("EndDate cannot be before startDate");
         }
 
         Specification<MissRequest> specification = Specification.where(null);
@@ -136,11 +140,8 @@ public class MissRequestsService {
         if (studentSurname != null) {
             specification = specification.and(MissRequestsSpecifications.madeByStudentBySurname(studentSurname));
         }
-        if (startDate != null) {
-            specification = specification.and(MissRequestsSpecifications.hasEndDateGreaterThanOrEqualTo(startDate));
-        }
-        if (endDate != null) {
-            specification = specification.and(MissRequestsSpecifications.hasStartDateLesserThanOrEqualTo(endDate));
+        if (startDate != null || endDate != null) {
+            specification = specification.and(MissRequestsSpecifications.hasMissRequestsInSegment(startDate, endDate));
         }
 
         return repository.findAll(specification, pageable);
@@ -171,12 +172,12 @@ public class MissRequestsService {
                 if (startDate.isAfter(studentFirstMissDate))
                     startDate = studentFirstMissDate;
 
-                if (endDate.isBefore(studentFirstMissDate))
+                if (endDate.isBefore(studentLastMissDate))
                     endDate = studentLastMissDate;
             }
         }
 
-        int totalDays = (int)ChronoUnit.DAYS.between(endDate, startDate);
+        int totalDays = (int)ChronoUnit.DAYS.between(startDate, endDate);
 
         for (GantGroupItemDto group: gantResponse.getGroups()) {
             csvWriter.writeNext(new String[]{group.getGroupName()});
@@ -192,7 +193,7 @@ public class MissRequestsService {
                     char typeChar = missRequestTypeMapper.toRuCharacter(request.getType());
 
                     for (int i = startDiff; i < endDiff; i++) {
-                        nextLine[i] = String.valueOf(typeChar);
+                        nextLine[i + 1] = String.valueOf(typeChar);
                     }
                 }
 

@@ -1,5 +1,6 @@
 package com.example.hits2025_java_missed_classes.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,5 +13,6 @@ import java.util.UUID;
 public class GroupDto {
     @NotBlank
     final private String name;
+    @Valid
     final private List<SubgroupDto> subgroups;
 }

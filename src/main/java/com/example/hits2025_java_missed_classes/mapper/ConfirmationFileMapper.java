@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class ConfirmationFileMapper {
     public ConfirmationFileDto toDto(ConfirmationFile model) {
         return new ConfirmationFileDto(
+                model.getId(),
                 model.getName(),
                 model.getAttachDate()
         );

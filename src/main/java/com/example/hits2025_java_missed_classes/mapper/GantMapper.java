@@ -6,9 +6,13 @@ import com.example.hits2025_java_missed_classes.dto.GantResponseDto;
 import com.example.hits2025_java_missed_classes.dto.GantStudentItemDto;
 import com.example.hits2025_java_missed_classes.model.MissRequest;
 import com.example.hits2025_java_missed_classes.model.User;
+import com.example.hits2025_java_missed_classes.repository.MissRequestsRepository;
+import com.example.hits2025_java_missed_classes.repository.specifications.MissRequestsSpecifications;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -19,13 +23,15 @@ import java.util.stream.Collectors;
 public class GantMapper {
     final StudentMapper studentMapper;
     final PaginationMapper paginationMapper;
+    private final MissRequestsRepository missRequestsRepository;
 
-    public GantMapper(StudentMapper studentMapper, PaginationMapper paginationMapper) {
+    public GantMapper(StudentMapper studentMapper, PaginationMapper paginationMapper, MissRequestsRepository missRequestsRepository) {
         this.studentMapper = studentMapper;
         this.paginationMapper = paginationMapper;
+        this.missRequestsRepository = missRequestsRepository;
     }
 
-    public GantResponseDto toDto(Page<User> sortedByGroupsPage) {
+    public GantResponseDto toDto(Page<User> sortedByGroupsPage, LocalDate startDate, LocalDate endDate) {
         List<User> domainStudents = sortedByGroupsPage.getContent();
 
         GantResponseDto finalGantResponse = new GantResponseDto(
@@ -37,11 +43,24 @@ public class GantMapper {
             return finalGantResponse;
         }
 
+        var datesSpecification = MissRequestsSpecifications.hasMissRequestsInSegment(startDate, endDate);
+
+        //
         GantGroupItemDto currentGantGroupItem = new GantGroupItemDto(
                 domainStudents.getFirst().getGroupName(),
-                new ArrayList<>()
+                List.of(
+                        new GantStudentItemDto(
+                                domainStudents.getFirst().getSurname(),
+                                domainStudents.getFirst().getName(),
+                                domainStudents.getFirst().getPatronymic(),
+                                toGantDto(missRequestsRepository.findAll(datesSpecification.and(MissRequestsSpecifications.hasCreatorById(domainStudents.getFirst().getId()))).stream()
+                                        .sorted(Comparator.comparing(MissRequest::getStartDate))
+                                        .collect(Collectors.toList()))
+                        )
+                )
         );
         finalGantResponse.getGroups().add(currentGantGroupItem);
+        //
 
         for (int i = 1; i < domainStudents.size(); i++) {
             var prevUser = domainStudents.get(i - 1);
@@ -58,13 +77,16 @@ public class GantMapper {
                 finalGantResponse.getGroups().add(currentGantGroupItem);
             }
 
+            Specification<MissRequest> specification = MissRequestsSpecifications.hasCreatorById(currentUser.getId());
+            var requests = missRequestsRepository.findAll(datesSpecification.and(specification));
+
             var newGantStudentItem = new GantStudentItemDto(
                     currentUser.getSurname(),
                     currentUser.getName(),
                     currentUser.getPatronymic(),
-                    toGantDto(currentUser.getCreatedMissRequests().stream()
+                    toGantDto(requests.stream()
                             .sorted(Comparator.comparing(MissRequest::getStartDate))
-                            .collect(Collectors.toList())) // TODO might be optimized by not fetching whole entity
+                            .collect(Collectors.toList()))
             );
             currentGantGroupItem.getStudents().add(newGantStudentItem);
         }

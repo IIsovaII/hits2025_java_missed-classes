@@ -1,21 +1,14 @@
 package com.example.hits2025_java_missed_classes.service;
 
-import com.example.hits2025_java_missed_classes.dto.GroupDto;
-import com.example.hits2025_java_missed_classes.dto.SubgroupDto;
-import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
-import com.example.hits2025_java_missed_classes.mapper.SubgroupMapper;
 import com.example.hits2025_java_missed_classes.model.Group;
-import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.Subgroup;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.SubgroupRepository;
 import com.example.hits2025_java_missed_classes.repository.ToolsRepository;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -41,7 +34,7 @@ public class ToolsService {
         User user = userRepository.getReferenceById(studentId);
         if (Objects.equals(user.getGroup().getName(), groupName)) {
             Subgroup subgroup = subgroupRepository.getReferenceById(subgroupId);
-            user.getSubgroup().add(subgroup);
+            user.getSubgroups().add(subgroup);
             userRepository.save(user);
         }
     }
@@ -70,14 +63,14 @@ public class ToolsService {
     public void deleteStudentFromGroup(UUID userId) {
         User user = userRepository.getReferenceById(userId);
         user.setGroup(null);
-        user.setSubgroup(null);
+        user.setSubgroups(null);
         userRepository.save(user);
     }
 
     public void deleteStudentFromSubgroup(UUID userId, UUID subgroupId) {
         User user = userRepository.getReferenceById(userId);
         Subgroup subgroup = subgroupRepository.getReferenceById(subgroupId);
-        user.getSubgroup().remove(subgroup);
+        user.getSubgroups().remove(subgroup);
         userRepository.save(user);
     }
 }

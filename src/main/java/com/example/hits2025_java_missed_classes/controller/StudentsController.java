@@ -4,6 +4,7 @@ import com.example.hits2025_java_missed_classes.dto.GantResponseDto;
 import com.example.hits2025_java_missed_classes.dto.StudentsPagedListDto;
 import com.example.hits2025_java_missed_classes.mapper.GantMapper;
 import com.example.hits2025_java_missed_classes.mapper.StudentsPagedListMapper;
+import com.example.hits2025_java_missed_classes.repository.specifications.MissRequestsSpecifications;
 import com.example.hits2025_java_missed_classes.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -93,7 +94,7 @@ public class StudentsController {
                         studentSurname,
                         startDate,
                         endDate,
-                        pageable)
-        );
+                        pageable),
+                startDate, endDate);
     }
 }

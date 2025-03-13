@@ -37,19 +37,22 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    /*
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable).cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/account/login", "/account/register", "/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/h2-console/**").permitAll().anyRequest().authenticated());
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                //.authorizeHttpRequests(auth -> auth.requestMatchers("/account/login", "/account/register", "/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/h2-console/**")
+                //        .permitAll().anyRequest());//.authenticated());
 
         // Добавляем JWT-фильтр перед стандартным фильтром аутентификации - будто здесь должно вылететь 401
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }*/
+    }
 
+    /*
     //TODO for debug
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -62,7 +65,7 @@ public class SecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
+    }*/
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

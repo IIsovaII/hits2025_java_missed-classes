@@ -41,22 +41,30 @@ public class MissRequestsSpecifications {
         };
     }
 
-    public static Specification<MissRequest> hasStartDateGreaterThan(LocalDate startDate) {
+    public static Specification<MissRequest> hasMissRequestsInSegment(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null && endDate == null) {return Specification.where(null);}
+
+        if (endDate == null) {
+            return hasEndDateGreaterThanOrEqualTo(startDate);
+        }
+
+        if (startDate == null) {
+            return hasStartDateLesserThanOrEqualTo(endDate);
+        }
+
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.greaterThan(root.get("startDate"), startDate);
+            criteriaBuilder.and(
+                    criteriaBuilder.lessThanOrEqualTo(root.get("startDate"), endDate),
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("endDate"), startDate)
+            );
     }
 
-    public static Specification<MissRequest> hasEndDateLesserThan(LocalDate endDate) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.lessThan(root.get("endDate"), endDate);
-    }
-
-    public static Specification<MissRequest> hasEndDateGreaterThanOrEqualTo(LocalDate startDate) {
+    private static Specification<MissRequest> hasEndDateGreaterThanOrEqualTo(LocalDate startDate) {
         return (root, query, criteriaBuilder) ->
             criteriaBuilder.greaterThanOrEqualTo(root.get("endDate"), startDate);
     }
 
-    public static Specification<MissRequest> hasStartDateLesserThanOrEqualTo(LocalDate endDate) {
+    private static Specification<MissRequest> hasStartDateLesserThanOrEqualTo(LocalDate endDate) {
         return (root, query, criteriaBuilder) ->
             criteriaBuilder.lessThanOrEqualTo(root.get("startDate"), endDate);
     }
