@@ -1,9 +1,11 @@
 package com.example.hits2025_java_missed_classes.service;
 
+import com.example.hits2025_java_missed_classes.dto.GetSubGroupDto;
 import com.example.hits2025_java_missed_classes.dto.GroupDto;
 import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
 import com.example.hits2025_java_missed_classes.mapper.SubgroupMapper;
 import com.example.hits2025_java_missed_classes.model.Group;
+import com.example.hits2025_java_missed_classes.model.Subgroup;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.SubgroupRepository;
 import com.example.hits2025_java_missed_classes.repository.ToolsRepository;
@@ -61,5 +63,9 @@ public class GroupService {
     public List<GroupDto> getGroups(String groupName) {
         List<Group> groups = toolsRepository.findByNameContainingIgnoreCase(groupName);
         return groups.stream().map(groupMapper::toDto).toList();
+    }
+
+    public UUID getSubgroup(GetSubGroupDto getSubGroupDto) {
+        return subgroupRepository.findByGroupNameAndName(getSubGroupDto.getGroupName(),getSubGroupDto.getSubgroupName());
     }
 }
