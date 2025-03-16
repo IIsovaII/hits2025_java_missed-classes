@@ -1,10 +1,7 @@
 package com.example.hits2025_java_missed_classes.exception;
 
 import com.example.hits2025_java_missed_classes.dto.ErrorResponseDto;
-import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.BadRequestException;
-import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.ForbiddenException;
-import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.InternalServerErrorException;
-import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.NotFoundException;
+import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.*;
 import com.example.hits2025_java_missed_classes.exception.unauthorized.TokenExpiredException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,6 +31,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ForbiddenException.class)
     public ErrorResponseDto handleBadRequestException(ForbiddenException ex) {
+        return new ErrorResponseDto(ex.getMessage());
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ErrorResponseDto handleUnauthorizedException(UnauthorizedException ex) {
         return new ErrorResponseDto(ex.getMessage());
     }
 
