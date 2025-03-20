@@ -46,7 +46,6 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-/*
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/account/login", "/account/register", "/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/h2-console/**")
                         .permitAll()
@@ -54,7 +53,6 @@ public class SecurityConfig {
         )
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
-*/
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

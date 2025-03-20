@@ -4,12 +4,16 @@ import com.example.hits2025_java_missed_classes.dto.LoginRequestDto;
 import com.example.hits2025_java_missed_classes.dto.RegisterRequestDto;
 import com.example.hits2025_java_missed_classes.dto.TokenResponseDto;
 import com.example.hits2025_java_missed_classes.exception.bad_request.EntityAlreadyExistsException;
+import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.UnauthorizedException;
 import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
 import com.example.hits2025_java_missed_classes.security.CustomUserDetails;
+import com.example.hits2025_java_missed_classes.security.JwtBlacklistService;
 import com.example.hits2025_java_missed_classes.security.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,25 +30,28 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtBlacklistService jwtBlacklistService;
 
-    public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtBlacklistService jwtBlacklistService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtBlacklistService = jwtBlacklistService;
     }
 
-    public TokenResponseDto authenticate(LoginRequestDto authRequest) {
+    public TokenResponseDto authenticate(LoginRequestDto authRequest, HttpServletRequest servletRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         String jwt = jwtUtil.generateToken(userDetails);
 
+        logout(servletRequest);
         return new TokenResponseDto(jwt);
     }
 
     @Transactional
-    public TokenResponseDto registerUser(RegisterRequestDto registerRequest) {
+    public TokenResponseDto registerUser(RegisterRequestDto registerRequest, HttpServletRequest servletRequest) {
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new EntityAlreadyExistsException("User with this email already exists.");
         }
@@ -66,6 +73,24 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         String jwt = jwtUtil.generateToken(userDetails);
+
+        logout(servletRequest);
         return new TokenResponseDto(jwt);
+    }
+
+    public String logout(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+
+            if (!jwtBlacklistService.isBlacklisted(token)) {
+                long expirationTime = jwtUtil.getExpirationTimeFromToken(token);
+                jwtBlacklistService.addToBlacklist(token, expirationTime);
+                return "Logged out successfully";
+            }
+        }
+
+        return "Already logged out";
     }
 }

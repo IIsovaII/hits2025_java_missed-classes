@@ -21,16 +21,12 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class UserController {
     private final AuthService authService;
-    private final JwtBlacklistService jwtBlacklistService;
-    private final JwtUtil jwtUtil;
     private final UserService userService;
     private final UserMapper userMapper;
 
     public UserController(
-            AuthService authService, JwtBlacklistService jwtBlacklistService, JwtUtil jwtUtil, UserService userService, UserMapper userMapper) {
+            AuthService authService, UserService userService, UserMapper userMapper) {
         this.authService = authService;
-        this.jwtBlacklistService = jwtBlacklistService;
-        this.jwtUtil = jwtUtil;
         this.userService = userService;
         this.userMapper = userMapper;
     }
@@ -42,31 +38,17 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<TokenResponseDto> registerUser(@Valid @RequestBody RegisterRequestDto request) {
-        return ResponseEntity.ok(authService.registerUser(request));
+    public TokenResponseDto registerUser(@Valid @RequestBody RegisterRequestDto request, HttpServletRequest servletRequest) {
+        return authService.registerUser(request, servletRequest);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> loginUser(@Valid @RequestBody LoginRequestDto request) {
-        return ResponseEntity.ok(authService.authenticate(request));
+    public TokenResponseDto loginUser(@Valid @RequestBody LoginRequestDto request, HttpServletRequest servletRequest) {
+        return authService.authenticate(request, servletRequest);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
-
-            if (!jwtBlacklistService.isBlacklisted(token)) {
-                long expirationTime = jwtUtil.getExpirationTimeFromToken(token);
-                jwtBlacklistService.addToBlacklist(token, expirationTime);
-                return ResponseEntity.ok("Logged out successfully");
-            } else {
-                throw new UnauthorizedException("Token is already blacklisted");
-            }
-        }
-
-        throw new UnauthorizedException("Invalid token");
+    public String logout(HttpServletRequest request) {
+        return authService.logout(request);
     }
 }

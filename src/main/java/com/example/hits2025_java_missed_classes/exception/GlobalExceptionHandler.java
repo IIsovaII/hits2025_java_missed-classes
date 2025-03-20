@@ -7,6 +7,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,39 +21,37 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
-    public ErrorResponseDto handleNotFoundException(NotFoundException ex) {
-        return new ErrorResponseDto(ex.getMessage());
+    public ResponseEntity<ErrorResponseDto> handleNotFoundException(NotFoundException ex) {
+        return new ResponseEntity<>(new ErrorResponseDto(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ErrorResponseDto handleBadRequestException(BadRequestException ex) {
-        return new ErrorResponseDto(ex.getMessage());
+    public ResponseEntity<ErrorResponseDto> handleBadRequestException(BadRequestException ex) {
+        return new ResponseEntity<>(new ErrorResponseDto(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ErrorResponseDto handleBadRequestException(ForbiddenException ex) {
-        return new ErrorResponseDto(ex.getMessage());
+    public ResponseEntity<ErrorResponseDto> handleBadRequestException(ForbiddenException ex) {
+        return new ResponseEntity<>(new ErrorResponseDto(ex.getMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ErrorResponseDto handleUnauthorizedException(UnauthorizedException ex) {
-        return new ErrorResponseDto(ex.getMessage());
+    public ResponseEntity<ErrorResponseDto> handleUnauthorizedException(UnauthorizedException ex) {
+        return new ResponseEntity<>(new ErrorResponseDto(ex.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(InternalServerErrorException.class)
-    public ErrorResponseDto handleInternalServerErrorException(InternalServerErrorException ex) {
-        return new ErrorResponseDto(ex.getMessage());
+    public ResponseEntity<ErrorResponseDto> handleInternalServerErrorException(InternalServerErrorException ex) {
+        return new ResponseEntity<>(new ErrorResponseDto(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
-    public ErrorResponseDto handleInternalServerErrorException(EntityNotFoundException ex) {
-        return new ErrorResponseDto(ex.getMessage());
+    public ResponseEntity<ErrorResponseDto> handleInternalServerErrorException(EntityNotFoundException ex) {
+        return new ResponseEntity<>(new ErrorResponseDto(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponseDto handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponseDto> handleValidationExceptions(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -60,12 +59,16 @@ public class GlobalExceptionHandler {
                         "Invalid argument: " + fieldError.getField() + " " + fieldError.getDefaultMessage())
                 .toList();
 
-        return new ErrorResponseDto(errors);
+        return new ResponseEntity<>(new ErrorResponseDto(errors), HttpStatus.BAD_REQUEST);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ErrorResponseDto handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        return new ErrorResponseDto("Invalid input: " + ex.getName() + " should be of type " + Objects.requireNonNull(ex.getRequiredType()).getSimpleName());
+    public ResponseEntity<ErrorResponseDto> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        return new ResponseEntity<>(new
+                ErrorResponseDto(
+                        "Invalid input: " + ex.getName()
+                                + " should be of type "
+                                + Objects.requireNonNull(ex.getRequiredType()).getSimpleName()
+        ), HttpStatus.BAD_REQUEST);
     }
 }
