@@ -10,8 +10,6 @@ import java.util.UUID;
 @Repository
 public interface SubgroupRepository extends JpaRepository<Subgroup, UUID> {
     void deleteByName(String name);
-
     UUID getReferenceByName(String subgroupName);
-
     UUID findByGroupNameAndName(@NotBlank String groupName, @NotBlank String groupName1);
 }

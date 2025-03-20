@@ -94,7 +94,7 @@ public class MissRequestsService {
 
         if (newEndDate.isBefore(missRequest.getEndDate())) {
             //TODO throw different exception
-            throw new IllegalArgumentException("New endDate cannot be lesser than old endDate");
+            throw new BadRequestException("New endDate cannot be lesser than old endDate");
         }
 
         if (missRequest.getStatus() == MissRequestStatus.DENIED) {

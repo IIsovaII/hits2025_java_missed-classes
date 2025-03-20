@@ -5,14 +5,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ToolsRepository extends JpaRepository<Group, UUID> {
+public interface ToolsRepository extends JpaRepository<Group, String> {
     Group getReferenceByName(String groupName);
     void deleteByName(String name);
 
-    Group findByName(String groupName);
+    Optional<Group> findByName(String groupName);
 
     List<Group> findByNameContainingIgnoreCase(String name);
+
+    boolean existsByName(String name);
 }

@@ -25,15 +25,11 @@ import java.util.UUID;
 public class ToolsController {
 
     private final ToolsService toolsService;
-    private final GroupMapper groupMapper;
     private final UserService userService;
-    private final SubgroupMapper subgroupMapper;
 
-    public ToolsController(ToolsService toolsService, GroupMapper groupMapper, UserService userService, SubgroupMapper subgroupMapper) {
+    public ToolsController(ToolsService toolsService, UserService userService) {
         this.toolsService = toolsService;
-        this.groupMapper = groupMapper;
         this.userService = userService;
-        this.subgroupMapper = subgroupMapper;
     }
 
     @PostMapping("/student/add/group")
@@ -46,7 +42,10 @@ public class ToolsController {
     @PostMapping("/student/add/subgroup")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
     public ResponseEntity<?> addStudentSubgroup(@RequestBody @Valid StudentAddToSubgroupModelDto studentAddToSubgroupModelDto) {
-        toolsService.addStudentToSubgroup(studentAddToSubgroupModelDto.getUserId(), studentAddToSubgroupModelDto.getSubgroupId(), studentAddToSubgroupModelDto.getGroupName());
+        toolsService.addStudentToSubgroup(
+                studentAddToSubgroupModelDto.getUserId(),
+                studentAddToSubgroupModelDto.getSubgroupId()
+        );
         return null;
     }
 
@@ -62,16 +61,16 @@ public class ToolsController {
         toolsService.deleteStudentFromSubgroup(studentAddToSubgroupModelDto.getUserId(), studentAddToSubgroupModelDto.getSubgroupId());
     }
 
-    @PostMapping("/group/add")
+    @PostMapping("/group/{name}/add")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
-    public void addGroup(@RequestBody @Valid GroupDto group) {
-        toolsService.addGroup(groupMapper.toModel(group));
+    public void addGroup(@PathVariable String name) {
+        toolsService.addGroup(name);
     }
 
-    @PostMapping("/subgroup/add")
+    @PostMapping("/subgroup/{subgroupName}/add/to/group/{groupName}")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
-    public void addGroup(@RequestBody @Valid SubgroupCreateModelDto subgroupCreateModelDto) {
-        toolsService.addSubgroup(subgroupMapper.toModel(subgroupCreateModelDto.getSubgroup()), subgroupCreateModelDto.getGroupName());
+    public void addSubgroup(@PathVariable String groupName, @PathVariable String subgroupName) {
+        toolsService.addSubgroup(subgroupName, groupName);
     }
 
     @DeleteMapping("/group/{groupName}/delete")
@@ -83,7 +82,7 @@ public class ToolsController {
     @DeleteMapping("/subgroup/{subgroupId}/delete")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
     public void deleteGroup(@PathVariable UUID subgroupId) {
-        toolsService.deleteSubgroupByName(subgroupId);
+        toolsService.deleteSubgroupById(subgroupId);
     }
 
     @PostMapping("/teacher/{id}/add")

@@ -13,8 +13,6 @@ import java.util.UUID;
 public class StudentAddToSubgroupModelDto {
     @NotNull
     private UUID userId;
-    @NotBlank
-    private String groupName;
     @NotNull
     private UUID subgroupId;
 }
