@@ -18,4 +18,6 @@ public interface ToolsRepository extends JpaRepository<Group, String> {
     List<Group> findByNameContainingIgnoreCase(String name);
 
     boolean existsByName(String name);
+
+    List<Group> findByNameIgnoreCaseStartingWith(String prefix);
 }

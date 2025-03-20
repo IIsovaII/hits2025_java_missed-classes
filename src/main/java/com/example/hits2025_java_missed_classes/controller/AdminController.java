@@ -25,18 +25,14 @@ public class AdminController {
     @Operation(summary = "add dean worker")
     @PostMapping("/deansWorker/add")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Boolean> setAsDeanWorker(@RequestBody @Valid UserAssignToRoleModelDto request) {
-        return ResponseEntity.ok(
-                userService.addRoleById(request.getUserId(), Role.ROLE_DEAN_WORKER)
-        );
+    public void setAsDeanWorker(@RequestBody @Valid UserAssignToRoleModelDto request) {
+        userService.addRoleById(request.getUserId(), Role.ROLE_DEAN_WORKER);
     }
 
     @Operation(summary = "delete dean worker")
     @DeleteMapping("/deansWorker/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Boolean> removeFromDeanWorkers(@RequestBody @Valid UserAssignToRoleModelDto request) {
-        return ResponseEntity.ok(
-                userService.deleteRoleById(request.getUserId(), Role.ROLE_DEAN_WORKER)
-        );
+    public void removeFromDeanWorkers(@RequestBody @Valid UserAssignToRoleModelDto request) {
+        userService.deleteRoleById(request.getUserId(), Role.ROLE_DEAN_WORKER);
     }
 }

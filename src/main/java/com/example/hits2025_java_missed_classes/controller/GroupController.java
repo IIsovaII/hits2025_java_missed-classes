@@ -28,28 +28,24 @@ public class GroupController {
 
     private final GroupService groupService;
     private final UserService userService;
-    private final JwtUtil jwtUtil;
 
-    public GroupController(GroupService groupService, UserService userService, JwtUtil jwtUtil) {
+    public GroupController(GroupService groupService, UserService userService) {
         this.groupService = groupService;
         this.userService = userService;
-        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/favourite/{groupName}/group/add")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public ResponseEntity<?> addGroup(@PathVariable String groupName) {
+    public void addGroup(@PathVariable String groupName) {
         User user = userService.getCurrentUser();
         groupService.addGroupToFav(user.getId(), groupName);
-        return null;
     }
 
     @PostMapping("/favourite/{subgroupId}/subgroup/add")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public ResponseEntity<?> addSubgroup(@PathVariable UUID subgroupId) {
+    public void addSubgroup(@PathVariable UUID subgroupId) {
         User user = userService.getCurrentUser();
         groupService.addSubgroupToFav(user.getId(), subgroupId);
-        return null;
     }
 
     @DeleteMapping("/favourite/{groupName}/group/delete")
@@ -77,7 +73,6 @@ public class GroupController {
     public UUID getSubgroupGet(@RequestParam GetSubGroupDto subGroupDto) {
         return groupService.getSubgroup(subGroupDto);
     }
-
 
     @GetMapping("/searchGroup")
     public List<GroupDto> getGroupsByName(@RequestParam String groupName) {

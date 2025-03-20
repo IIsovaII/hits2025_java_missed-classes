@@ -4,7 +4,6 @@ import com.example.hits2025_java_missed_classes.exception.base_status_code_excep
 import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.model.User;
 import com.example.hits2025_java_missed_classes.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,18 +19,16 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public boolean addRoleById(UUID id, Role role) {
+    public void addRoleById(UUID id, Role role) {
         User user = userRepository.getReferenceById(id);
         user.getRoles().add(role);
         userRepository.save(user);
-        return true;
     }
 
-    public boolean deleteRoleById(UUID id, Role role) {
+    public void deleteRoleById(UUID id, Role role) {
         User user = userRepository.getReferenceById(id);
         user.getRoles().remove(role);
         userRepository.save(user);
-        return true;
     }
 
     public User getCurrentUser() {

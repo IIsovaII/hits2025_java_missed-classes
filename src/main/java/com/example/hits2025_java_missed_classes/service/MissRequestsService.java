@@ -44,10 +44,6 @@ public class MissRequestsService {
         this.missRequestTypeMapper = missRequestTypeMapper;
     }
 
-    public MissRequest add(MissRequest missRequest) {
-        return repository.save(missRequest);
-    }
-
     public MissRequest add(MissRequestCreateModel model) {
         MissRequest missRequest = new MissRequest();
 
@@ -93,7 +89,6 @@ public class MissRequestsService {
                 .orElseThrow(() -> new EntityNotFoundException("Miss request not found with id: " + id));
 
         if (newEndDate.isBefore(missRequest.getEndDate())) {
-            //TODO throw different exception
             throw new BadRequestException("New endDate cannot be lesser than old endDate");
         }
 
@@ -123,7 +118,6 @@ public class MissRequestsService {
             LocalDate endDate,
             Pageable pageable) {
 
-        //TODO throw different exception
         if (endDate != null && startDate != null &&
                 endDate.isBefore(startDate)) {
             throw new BadRequestException("EndDate cannot be before startDate");
@@ -147,7 +141,8 @@ public class MissRequestsService {
         return repository.findAll(specification, pageable);
     }
 
-    //TODO убейте меня за этот код и того, кто придумал экспортировать csv
+    //TODO офк убрать дто из сервиса, но кто уберет если это последний день дедлайна??
+    // + разбить на функции и классы, да и вообще вынести в csv сервис
     public byte[] generateMissesCsv(GantResponseDto gantResponse){
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);

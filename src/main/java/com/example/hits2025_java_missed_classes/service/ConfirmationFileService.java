@@ -74,7 +74,7 @@ public class ConfirmationFileService {
                 request.getEndDate();
     }
 
-    public byte[] createArchive(Map<String, byte[]> fileHierarchy) {
+    private byte[] createArchive(Map<String, byte[]> fileHierarchy) {
         try {
             Path tempDir = createTempDirectory(fileHierarchy);
             ByteArrayOutputStream byteArrayOutputStream = archiveDirectory(tempDir);
