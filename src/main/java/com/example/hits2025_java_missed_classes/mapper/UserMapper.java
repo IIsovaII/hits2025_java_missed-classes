@@ -10,6 +10,7 @@ public class UserMapper {
         return new UserDto(
                 model.getId(),
                 model.getName(),
+                model.getGroupName(),
                 model.getEmail(),
                 model.getSurname(),
                 model.getPatronymic(),

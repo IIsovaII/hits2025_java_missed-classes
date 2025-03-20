@@ -19,6 +19,8 @@ public class UserDto {
     @NotNull
     private String name;
 
+    private String groupName;
+
     @NotBlank
     @Email
     private String email;
