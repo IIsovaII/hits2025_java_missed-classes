@@ -3,6 +3,7 @@ package com.example.hits2025_java_missed_classes.controller;
 import com.example.hits2025_java_missed_classes.dto.*;
 import com.example.hits2025_java_missed_classes.mapper.*;
 import com.example.hits2025_java_missed_classes.model.ArchiveModel;
+import com.example.hits2025_java_missed_classes.model.ConfirmationFile;
 import com.example.hits2025_java_missed_classes.repository.ConfirmationFileRepository;
 import com.example.hits2025_java_missed_classes.service.ConfirmationFileService;
 import com.example.hits2025_java_missed_classes.service.MissRequestsService;
@@ -30,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/requests")
@@ -153,8 +155,46 @@ public class MissRequestsController {
     @Operation(summary = "Export confirmation documents of the requests by theirs(requests) ids (for dean workers)")
     @GetMapping("confirmations/export")
     @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
-    public ResponseEntity<ByteArrayResource> exportArchivedAttachmentsByRequestsIds(@RequestParam List<UUID> ids, HttpServletResponse response) {
+    public ResponseEntity<ByteArrayResource> exportArchivedAttachmentsByRequestsIds(@RequestParam List<UUID> ids) {
         ArchiveModel archive = confirmationFileService.exportArchivedAttachmentsByRequestsIds(ids);
+        ByteArrayResource resource = new ByteArrayResource(archive.getData());
+
+        String filename = archive.getName() + ".zip";
+        String encodedFilename = "filename*=UTF-8''" + URLEncoder.encode(filename, StandardCharsets.UTF_8)
+                .replace("+", "%20");
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + encodedFilename)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(archive.getData().length)
+                .body(resource);
+    }
+
+    //TODO БЕК УМРИ (тоже дедлайн, не судите)
+    @Operation(summary = "Export confirmation documents of the requests by theirs(requests) ids (for dean workers)")
+    @GetMapping("confirmations/export/filtered")
+    @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
+    public ResponseEntity<ByteArrayResource> exportArchivedAttachmentsByRequestsFilters(
+            @Schema(description = "filter by specific group (by given prefix)")
+            @RequestParam(required = false) String group,
+            @Schema(description = "filter by specific subgroups (by any of given prefixes)")
+            @RequestParam(required = false) List<String> subgroups,
+            @Schema(description = "filter by student's surname")
+            @RequestParam(required = false) String studentSurname,
+            @Schema(description = "filters requests with start date greater than this parameter")
+            @RequestParam(required = false) LocalDate startDate,
+            @Schema(description = "filters requests with end date lesser than this parameter")
+            @RequestParam(required = false) LocalDate endDate
+    ) {
+        var temp = missRequestsService.getMissRequestFiltered(
+                        group,
+                        subgroups,
+                        studentSurname,
+                        startDate,
+                        endDate).stream().flatMap(it -> it.getConfirmationFiles().stream().map(ConfirmationFile::getId)
+                ).toList();
+
+        ArchiveModel archive = confirmationFileService.exportArchivedAttachmentsByRequestsIds(temp);
         ByteArrayResource resource = new ByteArrayResource(archive.getData());
 
         String filename = archive.getName() + ".zip";

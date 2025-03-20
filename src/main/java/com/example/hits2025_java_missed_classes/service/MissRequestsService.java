@@ -141,6 +141,36 @@ public class MissRequestsService {
         return repository.findAll(specification, pageable);
     }
 
+    public List<MissRequest> getMissRequestFiltered(
+            String groupName,
+            List<String> subgroups,
+            String studentSurname,
+            LocalDate startDate,
+            LocalDate endDate) {
+
+        if (endDate != null && startDate != null &&
+                endDate.isBefore(startDate)) {
+            throw new BadRequestException("EndDate cannot be before startDate");
+        }
+
+        Specification<MissRequest> specification = Specification.where(null);
+
+        if (groupName != null) {
+            specification = specification.and(MissRequestsSpecifications.madeByStudentFromGroupByName(groupName));
+        }
+        if (subgroups != null) {
+            specification = specification.and(MissRequestsSpecifications.madeByStudentFromSubgroupByName(subgroups));
+        }
+        if (studentSurname != null) {
+            specification = specification.and(MissRequestsSpecifications.madeByStudentBySurname(studentSurname));
+        }
+        if (startDate != null || endDate != null) {
+            specification = specification.and(MissRequestsSpecifications.hasMissRequestsInSegment(startDate, endDate));
+        }
+
+        return repository.findAll(specification);
+    }
+
     //TODO офк убрать дто из сервиса, но кто уберет если это последний день дедлайна??
     // + разбить на функции и классы, да и вообще вынести в csv сервис
     public byte[] generateMissesCsv(GantResponseDto gantResponse){
