@@ -48,8 +48,8 @@ public class ConfirmationFileService {
         Map<String, byte[]> fileHierarchy = new HashMap<>();
 
         for (UUID id : ids) {
-            MissRequest request = missRequestsRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Miss request not found with id: " + id));
+            MissRequest request = confirmationFileRepository.getMissRequestById(id);
+//                    .orElseThrow(() -> new EntityNotFoundException("Miss request not found with id: " + id));
 
             String requestDirectoryName = generateRequestDirectoryName(request);
             for (ConfirmationFile file : request.getConfirmationFiles()) {
