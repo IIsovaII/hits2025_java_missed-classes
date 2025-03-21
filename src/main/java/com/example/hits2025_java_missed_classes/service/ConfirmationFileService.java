@@ -35,8 +35,7 @@ public class ConfirmationFileService {
     }
 
     public ArchiveModel exportArchivedAttachmentsById(UUID id) {
-        ConfirmationFile confirmationFile = confirmationFileRepository.findById(id).
-                orElseThrow(() -> new EntityNotFoundException("Confirmation file not found with id: " + id));
+        ConfirmationFile confirmationFile = confirmationFileRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Confirmation file not found with id: " + id));
 
         Map<String, byte[]> fileHierarchy = Map.of(confirmationFile.getName(), confirmationFile.getData());
         byte[] archiveData = createArchive(fileHierarchy);
@@ -48,12 +47,11 @@ public class ConfirmationFileService {
         Map<String, byte[]> fileHierarchy = new HashMap<>();
 
         for (UUID id : ids) {
-            MissRequest request = confirmationFileRepository.getMissRequestById(id);
-//                    .orElseThrow(() -> new EntityNotFoundException("Miss request not found with id: " + id));
+            Optional<MissRequest> request = Optional.ofNullable(confirmationFileRepository.getMissRequestById(id).orElseThrow(() -> new EntityNotFoundException("Miss request not found with id: " + id)));
 
-            String requestDirectoryName = generateRequestDirectoryName(request);
-            for (ConfirmationFile file : request.getConfirmationFiles()) {
-                fileHierarchy.put(requestDirectoryName + '/' +  file.getName(), file.getData());
+            String requestDirectoryName = generateRequestDirectoryName(request.get());
+            for (ConfirmationFile file : request.get().getConfirmationFiles()) {
+                fileHierarchy.put(requestDirectoryName + '/' + file.getName(), file.getData());
             }
         }
 
@@ -63,15 +61,7 @@ public class ConfirmationFileService {
 
     private String generateRequestDirectoryName(MissRequest request) {
         User creator = request.getCreator();
-        return creator.getSurname() +
-                creator.getSurname().charAt(0) +
-                creator.getPatronymic().charAt(0) +
-                '_' +
-                missRequestTypeMapper.toRuString(request.getType()) +
-                '_' +
-                request.getStartDate() +
-                '_' +
-                request.getEndDate();
+        return creator.getSurname() + creator.getSurname().charAt(0) + creator.getPatronymic().charAt(0) + '_' + missRequestTypeMapper.toRuString(request.getType()) + '_' + request.getStartDate() + '_' + request.getEndDate();
     }
 
     private byte[] createArchive(Map<String, byte[]> fileHierarchy) {
@@ -80,8 +70,7 @@ public class ConfirmationFileService {
             ByteArrayOutputStream byteArrayOutputStream = archiveDirectory(tempDir);
             removeTempDirectory(tempDir);
             return byteArrayOutputStream.toByteArray();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             throw new FailedCreatingArchiveException();
         }
@@ -96,18 +85,16 @@ public class ConfirmationFileService {
     private static ByteArrayOutputStream archiveDirectory(Path tempDir) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
-            Files.walk(tempDir)
-                    .filter(path -> !Files.isDirectory(path))
-                    .forEach(path -> {
-                        try {
-                            String entryName = tempDir.relativize(path).toString();
-                            zipOutputStream.putNextEntry(new ZipEntry(entryName));
-                            Files.copy(path, zipOutputStream);
-                            zipOutputStream.closeEntry();
-                        } catch (IOException e) {
-                            throw new RuntimeException("Failed to add file to archive", e);
-                        }
-                    });
+            Files.walk(tempDir).filter(path -> !Files.isDirectory(path)).forEach(path -> {
+                try {
+                    String entryName = tempDir.relativize(path).toString();
+                    zipOutputStream.putNextEntry(new ZipEntry(entryName));
+                    Files.copy(path, zipOutputStream);
+                    zipOutputStream.closeEntry();
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to add file to archive", e);
+                }
+            });
         }
         return byteArrayOutputStream;
     }
@@ -124,14 +111,12 @@ public class ConfirmationFileService {
     }
 
     private static void removeTempDirectory(Path tempDir) throws IOException {
-        Files.walk(tempDir)
-                .sorted(Comparator.reverseOrder())
-                .forEach(path -> {
-                    try {
-                        Files.delete(path);
-                    } catch (IOException e) {
-                        throw new RuntimeException("Failed to delete temporary file", e);
-                    }
-                });
+        Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(path -> {
+            try {
+                Files.delete(path);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to delete temporary file", e);
+            }
+        });
     }
 }
