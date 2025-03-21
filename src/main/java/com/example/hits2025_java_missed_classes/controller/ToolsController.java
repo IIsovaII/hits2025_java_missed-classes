@@ -1,11 +1,9 @@
 package com.example.hits2025_java_missed_classes.controller;
 
-import com.example.hits2025_java_missed_classes.dto.SubgroupCreateModelDto;
-import com.example.hits2025_java_missed_classes.dto.GroupDto;
-import com.example.hits2025_java_missed_classes.dto.StudentAddToGroupModelDto;
-import com.example.hits2025_java_missed_classes.dto.StudentAddToSubgroupModelDto;
+import com.example.hits2025_java_missed_classes.dto.*;
 import com.example.hits2025_java_missed_classes.mapper.GroupMapper;
 import com.example.hits2025_java_missed_classes.mapper.SubgroupMapper;
+import com.example.hits2025_java_missed_classes.mapper.UserMapper;
 import com.example.hits2025_java_missed_classes.model.Role;
 import com.example.hits2025_java_missed_classes.service.ToolsService;
 import com.example.hits2025_java_missed_classes.service.UserService;
@@ -16,7 +14,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tools")
@@ -26,10 +26,12 @@ public class ToolsController {
 
     private final ToolsService toolsService;
     private final UserService userService;
+    private final UserMapper userMapper;
 
-    public ToolsController(ToolsService toolsService, UserService userService) {
+    public ToolsController(ToolsService toolsService, UserService userService, UserMapper userMapper) {
         this.toolsService = toolsService;
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("/student/add/group")
@@ -37,6 +39,12 @@ public class ToolsController {
     public ResponseEntity<?> addStudentGroup(@RequestBody @Valid StudentAddToGroupModelDto studentAddRequest) {
         toolsService.addStudentToGroup(studentAddRequest.getUserId(), studentAddRequest.getGroupName());
         return null;
+    }
+
+    @GetMapping("/users")
+    @PreAuthorize("hasRole('ROLE_DEAN_WORKER')")
+    public List<UserDto> getAllUsers() {
+        return toolsService.getAllUsers().stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 
     @PostMapping("/student/add/subgroup")

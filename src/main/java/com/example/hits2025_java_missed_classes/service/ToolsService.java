@@ -1,5 +1,6 @@
 package com.example.hits2025_java_missed_classes.service;
 
+import com.example.hits2025_java_missed_classes.dto.UserDto;
 import com.example.hits2025_java_missed_classes.exception.base_status_code_exceptions.BadRequestException;
 import com.example.hits2025_java_missed_classes.model.Group;
 import com.example.hits2025_java_missed_classes.model.Subgroup;
@@ -11,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -102,5 +104,9 @@ public class ToolsService {
                 .orElseThrow(() -> new EntityNotFoundException("Subgroup " + subgroupId + " not found"));
         user.getSubgroups().remove(subgroup);
         userRepository.save(user);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
