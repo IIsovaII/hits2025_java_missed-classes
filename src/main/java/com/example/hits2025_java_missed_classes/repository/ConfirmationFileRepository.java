@@ -8,6 +8,4 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ConfirmationFileRepository extends JpaRepository<ConfirmationFile, UUID>{
-    Optional<MissRequest> MissRequestById(UUID id);
-
 }
